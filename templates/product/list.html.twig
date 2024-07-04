@@ -1,0 +1,17 @@
+<h1>
+    Liste des produits
+</h1>
+
+{% for product in products %}
+    <div class="card border" style="width: 18rem;">
+        <img src="{{ product.picture | default('img/no_picture.jpg') }}" class="card-img-top" alt="{{ product.title }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ product.title }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+        </div>
+        <div class="card-body">
+            <a href="#" class="card-link">Voir plus</a>
+            <a href="#" class="card-link">Ajouter au panier</a>
+        </div>
+    </div>
+{% endfor %}
