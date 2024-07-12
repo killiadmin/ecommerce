@@ -1,0 +1,9 @@
+.navbar .dropdown-toggle::after {
+    display: none;
+}
+
+.shopping-bag-container .pos-mobile {
+    right: -15px;
+    top: -5px;
+    font-size: 15px;
+}

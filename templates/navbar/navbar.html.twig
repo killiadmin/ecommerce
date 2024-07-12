@@ -1,0 +1,116 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid p-1">
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">E-commerce</a>
+        <!-- Toggler/collapsible Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Navbar Mobile Begin -->
+            <div class="d-sm-flex d-xl-none justify-content-end flex-direction-reverse">
+                <ul class="navbar-nav me-4" style="font-size: 50px;">
+                    <li class="nav-item me-3 me-lg-1 active">
+                        <a class="nav-link" href="#">
+                            <span>
+                                Accueil
+                                <i class="fas fa-home fa-lg"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item me-3 me-lg-1" style="margin-left:30px;">
+                        <a class="nav-link" href="#">
+                            <span class="shopping-bag-container position-relative">
+                                Panier
+                                <i class="fas fa-shopping-bag fa-lg"></i>
+                                <span class="badge rounded-pill badge-notification bg-danger position-absolute pos-mobile">
+                                    2
+                                </span>
+                            </span>
+
+                        </a>
+                    </li>
+                    <li class="nav-item me-lg-1 active" style="margin-left:-3px;">
+                        <a class="nav-link" href="#">
+                            <span>
+                                Contact
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Navbar Mobile Ending -->
+            <div class="d-none d-lg-flex justify-content-between w-100">
+                <!-- Left elements -->
+                <div class="d-flex align-items-center">
+                    <!-- Search form -->
+                    <form class="input-group w-auto my-auto">
+                        <label>
+                            <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search"
+                                   style="min-width: 125px;"/>
+                        </label>
+                        <span class="input-group-text border-0 ms-1"><i class="fas fa-search"></i></span>
+                    </form>
+                </div>
+                <!-- Center elements -->
+                <ul class="navbar-nav flex-row d-none d-md-flex">
+                    <li class="nav-item me-3 me-lg-1 active">
+                        <a class="nav-link fs-5" href="#">
+                            <span><i class="fas fa-home fa-lg"></i></span>
+                        </a>
+                    </li>
+                    <li>&nbsp;</li>
+                    <li class="nav-item me-3 me-lg-1">
+                        <a class="nav-link fs-5" href="#">
+                            <span><i class="fas fa-shopping-bag fa-lg"></i></span>
+                            <span class="badge rounded-pill badge-notification bg-danger">2</span>
+                        </a>
+                    </li>
+                    <li>&nbsp;</li>
+                    <li class="nav-item me-3 me-lg-1 active">
+                        <a class="nav-link fs-5" href="#">
+                            <span><i class="fa-solid fa-envelope"></i></span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- Right elements -->
+                <ul class="navbar-nav flex-row align-items-center">
+                    <li class="nav-item me-3 me-lg-1">
+                        <a class="nav-link d-sm-flex align-items-sm-center fs-5" href="#">
+                            <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle"
+                                 height="22" alt="" loading="lazy"/>
+                            <strong class="d-none d-sm-block ms-1">Steve</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown me-3 me-lg-1">
+                        <a class="nav-link dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chevron-circle-down fa-lg"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="navbarDropdownMenuLink">
+                            <li>
+                                <a class="dropdown-item fs-5 border p-2 bg-secondary text-white shadow rounded"
+                                   href="#">Se connecter</a>
+                            </li>
+                            <li>&nbsp;</li>
+                            <li>
+                                <a class="dropdown-item fs-5 border p-2 bg-danger text-white shadow rounded" href="#">Se
+                                    déconnecter</a>
+                            </li>
+                            <li>&nbsp;</li>
+                            <li>
+                                <a class="dropdown-item fs-5 border p-2 bg-info text-white shadow rounded" href="#">Mon
+                                    profil</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- Navbar -->
