@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,20 @@ class  Product
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    /**
+     * @var Collection<int, BasketItem>
+     */
+    #[ORM\OneToMany(targetEntity: BasketItem::class, mappedBy: 'product')]
+    private Collection $basketItems;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $stock = null;
+
+    public function __construct()
+    {
+        $this->basketItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +151,48 @@ class  Product
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BasketItem>
+     */
+    public function getBasketItems(): Collection
+    {
+        return $this->basketItems;
+    }
+
+    public function addBasketItem(BasketItem $basketItem): static
+    {
+        if (!$this->basketItems->contains($basketItem)) {
+            $this->basketItems->add($basketItem);
+            $basketItem->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBasketItem(BasketItem $basketItem): static
+    {
+        if ($this->basketItems->removeElement($basketItem)) {
+            // set the owning side to null (unless already changed)
+            if ($basketItem->getProduct() === $this) {
+                $basketItem->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?int $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }
