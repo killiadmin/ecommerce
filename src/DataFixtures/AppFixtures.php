@@ -24,7 +24,19 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        // Créer les utilisateurs
+        // User admin
+        $userAdmin = new User();
+        $userAdmin->setEmail('killiadmin@ecommerce.com');
+        $userAdmin->setPassword($this->passwordHasher->hashPassword($userAdmin, 'password'));
+        $userAdmin->setFirstname('Killiadmin');
+        $userAdmin->setLastname('Administrator');
+        $userAdmin->setRoles(['ROLE_ADMIN']);
+        $userAdmin->setCreatedAt(new \DateTimeImmutable());
+
+        $manager->persist($userAdmin);
+
+        // Create users
+
         $users = [];
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();

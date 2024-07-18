@@ -41,6 +41,41 @@
                             </span>
                         </a>
                     </li>
+                    {% if not app.user %}
+                        <div class="d-flex flex-column align-items-end">
+                            <li class="nav-item me-lg-1 active bg-success w-50 text-center rounded shadow">
+                                <a class="nav-link text-white" href="{{ path("app_login") }}">
+                                    <span>
+                                        <i class="fa-solid fa-user"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="nav-item me-lg-1 active bg-info w-50 text-center rounded shadow mt-3">
+                                <a class="nav-link text-white" href="#">
+                                    <span>
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </span>
+                                </a>
+                            </li>
+                        </div>
+                    {% else %}
+                    <div class="d-flex flex-column align-items-end">
+                        <li class="nav-item me-lg-1 active bg-info w-50 text-center rounded shadow" style="margin-left:-3px;">
+                            <a class="nav-link" href="#">
+                                <span>
+                                    <i class="fa-regular fa-user"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item me-lg-1 active bg-danger w-50 text-center rounded shadow mt-3" style="margin-left:-3px;">
+                            <a class="nav-link text-white" href="{{ path("app_logout") }}">
+                                <span>
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </div>
+                    {% endif %}
                 </ul>
             </div>
             <!-- Navbar Mobile Ending -->
@@ -79,33 +114,57 @@
                 </ul>
                 <!-- Right elements -->
                 <ul class="navbar-nav flex-row align-items-center">
-                    <li class="nav-item me-3 me-lg-1">
-                        <a class="nav-link d-sm-flex align-items-sm-center fs-5" href="#">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle"
-                                 height="22" alt="" loading="lazy"/>
-                            <strong class="d-none d-sm-block ms-1">Steve</strong>
-                        </a>
-                    </li>
+                    {% if app.user %}
+                        <li class="nav-item me-3 me-lg-1">
+                            <a class="nav-link d-sm-flex align-items-sm-center fs-5" href="#">
+                                <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle"
+                                     height="22" alt="" loading="lazy"/>
+                                <strong class="d-none d-sm-block ms-1">
+                                    {% if app.user.firstname %}
+                                        {{ app.user.firstname }}
+                                    {% else %}
+                                        {{ app.user.email }}
+                                    {% endif %}
+                                </strong>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item dropdown me-3 me-lg-1">
                         <a class="nav-link dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-chevron-circle-down fa-lg"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="navbarDropdownMenuLink">
-                            <li>
-                                <a class="dropdown-item fs-5 border p-2 bg-secondary text-white shadow rounded"
-                                   href="#">Se connecter</a>
-                            </li>
-                            <li>&nbsp;</li>
-                            <li>
-                                <a class="dropdown-item fs-5 border p-2 bg-danger text-white shadow rounded" href="#">Se
-                                    déconnecter</a>
-                            </li>
-                            <li>&nbsp;</li>
-                            <li>
-                                <a class="dropdown-item fs-5 border p-2 bg-info text-white shadow rounded" href="#">Mon
-                                    profil</a>
-                            </li>
+                            {% if not app.user %}
+                                <li>
+                                    <a class="dropdown-item fs-5 border p-2 bg-secondary text-white shadow rounded"
+                                       href="{{ path("app_login") }}">
+                                        Me connecter
+                                    </a>
+                                </li>
+                                <li>&nbsp;</li>
+                                <li>
+                                    <a class="dropdown-item fs-5 border p-2 bg-primary text-white shadow rounded"
+                                       href="#">
+                                        M'inscrire
+                                    </a>
+                                </li>
+                                <li>&nbsp;</li>
+                            {% else %}
+                                <li>
+                                    <a class="dropdown-item fs-5 border p-2 bg-info text-white shadow rounded"
+                                       href="#">
+                                        Mon profil
+                                    </a>
+                                </li>
+                                <li>&nbsp;</li>
+                                <li>
+                                    <a class="dropdown-item fs-5 border p-2 bg-danger text-white shadow rounded"
+                                       href="{{ path("app_logout") }}">
+                                        Me déconnecter
+                                    </a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </li>
                 </ul>
