@@ -7,10 +7,12 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[AllowDynamicProperties] #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -41,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $baskets;
+
+    #[ORM\Column]
+    private ?bool $agree = null;
 
     public function __construct()
     {
@@ -165,5 +170,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    public function isAgree(): ?bool
+    {
+        return $this->agree;
+    }
+
+    public function setAgree(bool $agree): static
+    {
+        $this->agree = $agree;
+
+        return $this;
     }
 }

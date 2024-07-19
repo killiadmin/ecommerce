@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm, {'attr': {'class': 'w-25 mx-auto'}}) }}
+
+    <h1 class="h3 m-5 font-weight-normal">
+        {% if not app.user %}
+            M'inscrire ...
+        {% else %}
+            Bonjour {{ app.user.firstname }} !
+        {% endif %}
+    </h1>
+
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.firstname) }}
+    {{ form_row(registrationForm.lastname) }}
+    {{ form_row(registrationForm.plainPassword) }}
+    <div class="d-flex flex-row-reverse">
+        {{ form_row(registrationForm.agreeTerms) }}
+    </div>
+    <div class="d-flex flex-row-reverse">
+        <button type="submit" class="btn btn-success mt-3">Valider</button>
+    </div>
+    {{ form_end(registrationForm) }}
+{% endblock %}
