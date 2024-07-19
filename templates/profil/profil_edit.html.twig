@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+    {{ form_errors(EditProfil) }}
+    <div class="w-50 mx-auto text-center">
+        <h1 class="h3 m-5 font-weight-normal">
+            {% if app.user.firstname %}
+                Modification du profil de {{ app.user.firstname }}...
+            {% endif %}
+        </h1>
+    </div>
+    {{ form_start(EditProfil, {'attr': {'class': 'w-25 mx-auto'}}) }}
+    {{ form_row(EditProfil.email) }}
+    {{ form_row(EditProfil.firstname) }}
+    {{ form_row(EditProfil.lastname) }}
+    <div class="d-flex flex-row-reverse">
+        <button type="submit" class="btn btn-success mt-3">
+            Valider
+        </button>
+        <a class="btn btn-secondary mt-3 me-3" href={{ path("app_profil") }}>
+            Annuler
+        </a>
+    </div>
+    {{ form_end(EditProfil) }}
+{% endblock %}
