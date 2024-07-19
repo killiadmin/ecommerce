@@ -16,7 +16,7 @@ class SecurityController extends AbstractController
      *
      * @return Response The response object.
      */
-    #[Route(path: '/login', name: 'app_login')]
+    #[Route(path: '/connexion', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // Get the login error if there is one

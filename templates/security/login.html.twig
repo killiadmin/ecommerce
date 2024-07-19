@@ -10,7 +10,7 @@
             </div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">
+        <h1 class="h3 m-5 font-weight-normal">
             {% if not app.user %}
                 Me connecter ...
             {% else %}
@@ -27,9 +27,11 @@
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-        <div class="checkbox mb-3 mt-3">
-            <input type="checkbox" name="_remember_me" id="_remember_me">
-            <label for="_remember_me">Se souvenir de moi</label>
+        <div class="d-flex flex-row-reverse">
+            <div class="checkbox mb-3 mt-3">
+                <input type="checkbox" name="_remember_me" id="_remember_me">
+                <label for="_remember_me">Se souvenir de moi</label>
+            </div>
         </div>
 
         <div class="d-flex flex-row-reverse">
