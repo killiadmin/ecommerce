@@ -37,7 +37,6 @@ class AppFixtures extends Fixture
         $manager->persist($userAdmin);
 
         // Create users
-
         $users = [];
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
@@ -53,9 +52,9 @@ class AppFixtures extends Fixture
             $users[] = $user;
         }
 
-        // Créer les produits
+        // Create the products
         $products = [];
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $product = new Product();
             $product->setTitle($faker->text(16));
             $product->setDescription($faker->text(500));
@@ -70,12 +69,7 @@ class AppFixtures extends Fixture
             $products[] = $product;
         }
 
-        // Créer les paniers et les items de panier
-        for ($i = 1; $i <= 10; $i++) {
-            // Récupérer un utilisateur aléatoire
-            $user = $users[$faker->numberBetween(0, count($users) - 1)];
-
-            // Créer un panier
+        foreach(array_merge([$userAdmin], $users) as $user) {
             $basket = new Basket();
             $basket->setUser($user);
             $basket->setCreatedAt(new \DateTimeImmutable());
@@ -83,9 +77,9 @@ class AppFixtures extends Fixture
 
             $manager->persist($basket);
 
-            // Créer des items pour le panier
+            // Create items for the cart
             for ($j = 1; $j <= $faker->numberBetween(1, 5); $j++) {
-                // Récupérer un produit aléatoire
+                // Collect a random product
                 $product = $products[$faker->numberBetween(0, count($products) - 1)];
 
                 $basketItem = new BasketItem();
