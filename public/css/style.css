@@ -99,3 +99,38 @@ hr .new1 {
 .btn-profil {
     width: 165px;
 }
+
+/*
+===========================================PANIER============================================
+*/
+
+.table-custom {
+    border-collapse: collapse;
+    max-width: 1000px;
+    margin-top: 5rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-custom th {
+    background-color: #6c757d;
+    color: white;
+    padding: 1rem;
+}
+
+.table-custom td {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-custom .description {
+    max-height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

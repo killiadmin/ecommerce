@@ -15,8 +15,8 @@ class Basket
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'baskets')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'basket', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(type: 'datetime')]
@@ -28,7 +28,7 @@ class Basket
     /**
      * @var Collection<int, BasketItem>
      */
-    #[ORM\OneToMany(targetEntity: BasketItem::class, mappedBy: 'basket')]
+    #[ORM\OneToMany(targetEntity: BasketItem::class, mappedBy: 'basket', cascade: ['persist', 'remove'])]
     private Collection $items;
 
     public function __construct()

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BasketController!{% endblock %}
+
+{% block body %}
+    {% if basketIsEmpty %}
+        {% include 'basket/basket_empty.html.twig' %}
+    {% else %}
+        {% include 'basket/basket_detail.html.twig' %}
+    {% endif %}
+{% endblock %}

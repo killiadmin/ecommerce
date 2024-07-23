@@ -4,14 +4,13 @@ namespace App\Entity;
 
 use AllowDynamicProperties;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[AllowDynamicProperties] #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[AllowDynamicProperties]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -38,18 +37,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Basket>
-     */
-    #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $baskets;
-
     #[ORM\Column]
     private ?bool $agree = null;
 
+    #[ORM\OneToOne(targetEntity: Basket::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Basket $basket = null;
+
     public function __construct()
     {
-        $this->baskets = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -117,42 +113,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Basket>
-     */
-    public function getBaskets(): Collection
+    public function getBasket(): ?Basket
     {
-        return $this->baskets;
+        return $this->basket;
     }
 
-    public function addBasket(Basket $basket): static
+    public function setBasket(Basket $basket): static
     {
-        if (!$this->baskets->contains($basket)) {
-            $this->baskets->add($basket);
-            $basket->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBasket(Basket $basket): static
-    {
-        if ($this->baskets->removeElement($basket)) {
-            // set the owning side to null (unless already changed)
-            if ($basket->getUser() === $this) {
-                $basket->setUser(null);
-            }
-        }
+        $this->basket = $basket;
+        $basket->setUser($this);
 
         return $this;
     }
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): static
@@ -182,5 +158,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->agree = $agree;
 
         return $this;
+    }
+
+    public function countItemsInBasket(): int
+    {
+        $basket = $this->getBasket();
+
+        if ($basket) {
+            return count($basket->getItems());
+        }
+
+        return 0;
     }
 }

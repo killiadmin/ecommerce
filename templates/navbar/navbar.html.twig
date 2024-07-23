@@ -22,12 +22,12 @@
                         </a>
                     </li>
                     <li class="nav-item me-3 me-lg-1" style="margin-left:30px;">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ path("app_basket") }}">
                             <span class="shopping-bag-container position-relative">
                                 Panier
                                 <i class="fas fa-shopping-bag fa-lg"></i>
                                 <span class="badge rounded-pill badge-notification bg-danger position-absolute pos-mobile">
-                                    2
+                                    {{ app.user.countItemsInBasket() }}
                                 </span>
                             </span>
 
@@ -100,9 +100,13 @@
                     </li>
                     <li>&nbsp;</li>
                     <li class="nav-item me-3 me-lg-1">
-                        <a class="nav-link fs-5" href="#">
-                            <span><i class="fas fa-shopping-bag fa-lg"></i></span>
-                            <span class="badge rounded-pill badge-notification bg-danger">2</span>
+                        <a class="nav-link fs-5" href="{{ path("app_basket") }}">
+                            <span>
+                                <i class="fas fa-shopping-bag fa-lg"></i>
+                            </span>
+                            <span class="badge rounded-pill badge-notification bg-danger">
+                                {{ app.user.countItemsInBasket() }}
+                            </span>
                         </a>
                     </li>
                     <li>&nbsp;</li>
