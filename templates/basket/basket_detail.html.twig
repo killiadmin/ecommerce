@@ -14,9 +14,18 @@ Mon panier
             <tbody>
             {% for item in basketItems %}
                 <tr>
-                    <td>{{ item.product.title }}</td>
-                    <td class="description">{{ item.product.description }}</td>
-                    <td>{{ item.product.category }}</td>
+                    <td>
+                        {{ item.product.title }}
+                    </td>
+                    <td class="description">
+                        {{ item.product.description }}
+                    </td>
+                    <td class="quantity text-center">
+                        {{ item.quantity }}
+                        <a href="{{ path('delete_item', {'id' : item.id }) }}" class="delete-item border p-2 shadow text-danger pointer bg-white">
+                            <i class="fa-solid fa-xmark"></i>
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

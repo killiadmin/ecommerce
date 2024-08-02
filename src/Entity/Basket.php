@@ -107,4 +107,26 @@ class Basket
 
         return $this;
     }
+
+    public function hasProduct(Product $product): bool
+    {
+        foreach ($this->items as $item) {
+            if ($item->getProduct() === $product) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getItemForProduct(Product $product): ?BasketItem
+    {
+        foreach ($this->items as $item) {
+            if ($item->getProduct() === $product) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
 }
