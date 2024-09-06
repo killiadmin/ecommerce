@@ -18,11 +18,15 @@
                     <p class="card-text">{{ product.description }}</p>
                 </div>
                 <div class="d-flex flex-row-reverse card-body" style="font-size: 25px; ">
-                    <a href="{{ path('product_detail', {'id' : product.id }) }}" class="card-link text-black ms-4" title="Voir le produit en détail">
+                    <a href="{{ path('product_detail', {'id' : product.id }) }}"
+                       class="btn btn-secondary text-white ms-4 btn-sm btn-block my-2 fs-4"
+                       title="Voir le produit en détail">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </a>
-                    <a href="{{ path('add_item', {'id' : product.id }) }}" class="card-link text-black ms-4" title="Ajouter au panier">
-                        <i class="fa-solid fa-cart-shopping"></i>
+                    <a href="{{ path('add_item', {'id' : product.id }) }}"
+                       class="add-to-cart btn btn-success text-white ms-4 btn-sm btn-block my-2 fs-4"
+                       title="Ajouter au panier">
+                        <i class="fa-solid fa-cart-plus"></i>
                     </a>
                 </div>
             </div>

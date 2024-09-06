@@ -1,10 +1,11 @@
 <div class="container">
     <div class="d-flex justify-content-between">
-        <a class="btn btn-secondary text-white shadow me-2 fs-5" href="{{ path('app_product') }}" title="Voir la liste des produits">
+        <a class="btn btn-secondary text-white shadow me-2 fs-5"
+           href="{{ app.session.get('last_page') is not empty ? app.session.get('last_page') : path('app_product') }}">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <a class="btn btn-secondary text-white shadow me-2 fs-5" href="#" title="Ajouter un panier">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-cart-plus"></i>
         </a>
     </div>
     <div class="container border shadow mt-4">
