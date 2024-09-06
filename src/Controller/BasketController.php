@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -28,7 +29,7 @@ class BasketController extends AbstractController
      * @return Response The response containing the rendered template with the basket items or empty basket message
      */
     #[Route('/mon-panier', name: 'app_basket')]
-    public function listBasket(): Response
+    public function listBasket(Request $request): Response
     {
         // Get the current user
         $user = $this->security->getUser();
@@ -37,6 +38,8 @@ class BasketController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
+        $request->getSession()->set('last_page', $request->getUri());
 
         // Get the user's basket
         $basket = $user->getBasket();

@@ -1,28 +1,34 @@
 <h1 class="text-center mb-2">
-Mon panier
+    Mon panier
 </h1>
 <div class="container">
     <div class="row">
         <table class="table-custom">
             <thead>
-            <tr>
-                <th>Articles</th>
-                <th>Description</th>
-                <th>Catégorie</th>
-            </tr>
+                <tr>
+                    <th>Articles</th>
+                    <th>Description</th>
+                    <th>Quantité</th>
+                </tr>
             </thead>
             <tbody>
             {% for item in basketItems %}
                 <tr>
                     <td>
-                        {{ item.product.title }}
+                        <a class="text-decoration-none text-black" href="{{ path('product_detail', {'id' : item.product.id }) }}">
+                            {{ item.product.title }}
+                        </a>
                     </td>
                     <td class="description">
-                        {{ item.product.description }}
+                        <a class="text-decoration-none text-black" href="{{ path('product_detail', {'id' : item.product.id }) }}">
+                            {{ item.product.description }}
+                        </a>
                     </td>
                     <td class="quantity text-center">
                         {{ item.quantity }}
-                        <a href="{{ path('delete_item', {'id' : item.id }) }}" class="delete-item border p-2 shadow text-danger pointer bg-white">
+                        <a href="{{ path('delete_item', {'id' : item.id }) }}"
+                           title="Supprimer {{ item.product.title }} ?"
+                           class="delete-item border p-2 shadow text-danger pointer bg-white">
                             <i class="fa-solid fa-xmark"></i>
                         </a>
                     </td>
@@ -30,5 +36,14 @@ Mon panier
             {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div class="d-flex gap-3 mt-3 justify-content-between mx-auto w-75">
+        <a class="btn btn-secondary shadow" href="{{ path('app_product') }}" role="button">
+            Voir les produits
+        </a>
+        <a class="btn btn-success shadow" href="#" role="button">
+            Valider mon panier
+        </a>
     </div>
 </div>
