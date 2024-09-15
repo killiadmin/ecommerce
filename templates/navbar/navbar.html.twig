@@ -26,7 +26,7 @@
                             <span class="shopping-bag-container position-relative">
                                 Panier
                                 <i class="fas fa-shopping-bag fa-lg"></i>
-                                <span class="badge rounded-pill badge-notification bg-danger position-absolute pos-mobile">
+                                <span id="badge-quantity-mobile" class="badge rounded-pill badge-notification bg-danger position-absolute pos-mobile">
                                     {% if app.user %}
                                         {{ app.user.countItemsInBasket() }}
                                     {% else %}
@@ -108,7 +108,7 @@
                             <span>
                                 <i class="fas fa-shopping-bag fa-lg"></i>
                             </span>
-                            <span class="badge rounded-pill badge-notification bg-danger">
+                            <span id="badge-quantity-desk" class="badge rounded-pill badge-notification bg-danger">
                                 {% if app.user %}
                                     {{ app.user.countItemsInBasket() }}
                                 {% else %}

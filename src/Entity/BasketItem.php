@@ -57,7 +57,7 @@ class BasketItem
 
     public function getQuantity(): ?int
     {
-        return $this->quantity;
+        return (int) $this->quantity;
     }
 
     public function setQuantity(int $quantity): static

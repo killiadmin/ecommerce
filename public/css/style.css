@@ -110,6 +110,55 @@ hr .new1 {
 ===========================================LISTE DES PRODUITS============================================
  */
 
+.num-block {
+    float: left;
+    width: 100%;
+    align-content: center;
+}
+
+.skin-7 .num-in {
+    float: left;
+    width: 138px;
+    border: 1px solid #a4a4a3;
+}
+
+.skin-7 input.in-num {
+    font-size: 14px;
+    float: left;
+    height: auto;
+    width: 83px;
+    border-left: 1px solid #a4a4a3;
+    border-right: 1px solid #a4a4a3;
+    background-color: #fff;
+    text-align: center;
+}
+
+.skin-7 .num-in span  {
+    font-size: 24px;
+    text-align: center;
+    display: block;
+    width: 46px;
+    float: left;
+    height: auto;
+    background-color: #f4f4f6;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.skin-7 .num-in span:hover {
+    background-color: #d7d7d8;
+}
+
+.skin-7 .num-in input {
+    border: none;
+    float: left;
+    width: 44px;
+    line-height: 34px;
+    text-align: center;
+}
+
 .card-body .btn-block:hover {
     transform: scale(1.2);
     transition: transform .5s;
@@ -167,3 +216,7 @@ hr .new1 {
 .pointer {
     cursor: pointer;
 }
+
+/*
+===========================================MOBILE============================================
+*/
