@@ -9,6 +9,7 @@ use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,21 +119,14 @@ class BasketController extends AbstractController
      * @param EntityManagerInterface $em The entity manager to manage the removal of the item
      * @param BasketItem $item The item to be removed from the basket
      *
-     * @return Response The response that redirects to the user's basket after removing the item
+     * @return JsonResponse The response that redirects to the user's basket after removing the item
      */
     #[Route('/mon-panier/{id}/delete', name: 'delete_item')]
-    public function removeBasketItem(EntityManagerInterface $em, BasketItem $item): Response
+    public function removeBasketItem(EntityManagerInterface $em, BasketItem $item): JsonResponse
     {
-        /*$user = $this->getUser();*/
-
-        /*if ($user === null || (!$this->isGranted('ROLE_ADMIN') && $user !== $task->getIdUser())) {
-            return $this->redirectToRoute('app_logout');
-        }*/
-
         $em->remove($item);
         $em->flush();
 
-        /*$this->addFlash('success', 'Suppression de l\'article');*/
-        return $this->redirectToRoute('app_basket');
+        return new JsonResponse(['success' => true]);
     }
 }

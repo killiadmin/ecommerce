@@ -28,6 +28,13 @@
                        title="Ajouter au panier">
                         <i class="fa-solid fa-cart-plus"></i>
                     </a>
+                    <div class="num-block skin-7">
+                        <div class="num-in">
+                            <span class="minus dis">-</span>
+                            <input type="text" class="in-num" value="1" readonly="">
+                            <span class="plus">+</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,3 +45,5 @@
         {% endfor %}
     </div>
 </div>
+
+<script src="{{ asset('js/list.js') }}"></script>

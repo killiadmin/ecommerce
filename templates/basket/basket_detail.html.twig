@@ -9,11 +9,12 @@
                     <th>Articles</th>
                     <th>Description</th>
                     <th>Quantité</th>
+                    <th>Prix</th>
                 </tr>
             </thead>
             <tbody>
             {% for item in basketItems %}
-                <tr>
+                <tr data-item-id="{{ item.id }}">
                     <td>
                         <a class="text-decoration-none text-black" href="{{ path('product_detail', {'id' : item.product.id }) }}">
                             {{ item.product.title }}
@@ -24,11 +25,15 @@
                             {{ item.product.description }}
                         </a>
                     </td>
-                    <td class="quantity text-center">
+                    <td class="quantity text-center" data-quantity="{{ item.quantity }}">
                         {{ item.quantity }}
+                    </td>
+                    <td class="quantity text-center">
+                        {{ item.product.price }} €
                         <a href="{{ path('delete_item', {'id' : item.id }) }}"
                            title="Supprimer {{ item.product.title }} ?"
-                           class="delete-item border p-2 shadow text-danger pointer bg-white">
+                           class="delete-item border p-2 shadow text-danger pointer bg-white"
+                           data-item-id="{{ item.id }}">
                             <i class="fa-solid fa-xmark"></i>
                         </a>
                     </td>
@@ -47,3 +52,75 @@
         </a>
     </div>
 </div>
+
+<script src="{{ asset('js/basket.js') }}"></script>
+
+{#<script>
+    console.log("basket.js chargé");
+
+    // Ajoute un flag pour éviter les exécutions multiples
+    document.addEventListener("DOMContentLoaded", function () {
+        var deleteButtons = document.querySelectorAll(".delete-item");
+
+        deleteButtons.forEach(function (deleteButton) {
+            deleteButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                if (this.dataset.processing === "true") {
+                    console.log("Click ignoré car déjà en cours.");
+                    return;
+                }
+
+                this.dataset.processing = "true";
+
+                var itemId = this.dataset.itemId;
+                var row = document.querySelector('tr[data-item-id="' + itemId + '"]');
+                var self = this;
+
+                console.log("Essai de suppression de l'élément avec l'ID:", itemId);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", this.href, true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) { // La requête est terminée
+                        if (xhr.status === 200) { // La requête a réussi
+                            var response = JSON.parse(xhr.responseText);
+                            if (!response.success) {
+                                alert("Une erreur est survenue lors de la suppression de l'article.");
+                                self.dataset.processing = "false";
+                                return;
+                            }
+
+                            console.log("Suppression réussie pour l'élément avec l'ID:", itemId);
+                            var itemQuantity = parseInt(row.querySelector(".quantity[data-quantity]").dataset.quantity, 10);
+
+                            console.log("Quantité de l'article à supprimer:", itemQuantity);
+                            row.remove();
+                            console.log("Ligne supprimée du DOM.");
+
+                            var badge = document.querySelector("#badge-quantity");
+                            console.log("voici mon beau badge", badge.innerText);
+
+                            // Méthode 1: Coerce `innerText` to string
+                            var badgeText = String(badge.innerText);
+                            var currentCount = parseInt(badgeText, 10) || 0;
+                            console.log("Quantité actuelle du badge:", currentCount);
+                            var newCount = currentCount - itemQuantity;
+
+                            console.log("Nouvelle quantité du badge:", newCount);
+                            badge.innerText = newCount >= 0 ? newCount : 0;
+                            console.log("Mise à jour du badge:", badge.innerText);
+
+                            self.dataset.processing = "false";
+                        } else { // Une erreur s'est produite lors de la requête
+                            alert("Une erreur est survenue lors de la suppression de l'article.");
+                            self.dataset.processing = "false";
+                        }
+                    }
+                };
+                xhr.send();
+            });
+        });
+    });
+</script>#}

@@ -165,7 +165,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $basket = $this->getBasket();
 
         if ($basket) {
-            return count($basket->getItems());
+            $totalQuantity = 0;
+
+            foreach ($basket->getItems() as $item) {
+                $totalQuantity += (int) $item->getQuantity();
+            }
+
+            return $totalQuantity;
         }
 
         return 0;
