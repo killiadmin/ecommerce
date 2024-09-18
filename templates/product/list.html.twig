@@ -17,13 +17,13 @@
                     <h5 class="card-title">{{ product.title }}</h5>
                     <p class="card-text">{{ product.description }}</p>
                 </div>
-                <div class="d-flex flex-row-reverse card-body" style="font-size: 25px; ">
+                <div class="d-flex flex-row-reverse card-body quantity-selector" style="font-size: 25px; ">
                     <a href="{{ path('product_detail', {'id' : product.id }) }}"
                        class="btn btn-secondary text-white ms-4 btn-sm btn-block my-2 fs-4"
                        title="Voir le produit en détail">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </a>
-                    <a href="{{ path('add_item', {'id' : product.id }) }}"
+                    <a href="#" data-url="{{ path('add_item', {'id': product.id }) }}"
                        class="add-to-cart btn btn-success text-white ms-4 btn-sm btn-block my-2 fs-4"
                        title="Ajouter au panier">
                         <i class="fa-solid fa-cart-plus"></i>
@@ -31,7 +31,7 @@
                     <div class="num-block skin-7">
                         <div class="num-in">
                             <span class="minus dis">-</span>
-                            <input type="text" class="in-num" value="1" readonly="">
+                            <input type="text" id="qtyAddBasket" class="in-num" value="1" readonly="">
                             <span class="plus">+</span>
                         </div>
                     </div>
