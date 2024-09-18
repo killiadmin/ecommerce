@@ -26,10 +26,15 @@ $(document).ready(function() {
     });
 
     // Click handler for add to cart buttons with event delegation
-    $(".quantity-selector").on("click", ".add-to-cart", function () {
-        var $this = $(this);
-        var url = $this.data("url");
-        var quantity = $this.data("quantity");
+    $(".quantity-selector").on("click", ".add-to-cart", function (e) {
+        e.preventDefault();
+
+        var url = $(this).data("url");
+        var quantity = $(this).siblings(".num-block").find(".in-num").val();
+
+        if (!url) {
+            return;
+        }
 
         $.ajax({
             url: url,
@@ -38,10 +43,14 @@ $(document).ready(function() {
                 quantity: quantity
             },
             success: function(response) {
-                window.location.href = response.redirectUrl;
+                $("#successModal .modal-body").text(response.message);
+                $("#successModal").modal("show");
+
+                $("#badge-quantity-desk").text(response.cartItemsCount);
+                $("#badge-quantity-mobile").text(response.cartItemsCount);
             },
             error: function() {
-                alert("Erreur lors de l\'ajout au panier.");
+                window.location.href = "/connexion"
             }
         });
     });

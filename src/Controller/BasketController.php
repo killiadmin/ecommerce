@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Basket;
 use App\Entity\BasketItem;
+use App\Entity\User;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,10 +80,15 @@ class BasketController extends AbstractController
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            return new JsonResponse(['message' => 'Utilisateur non connecté ou non valide'], 400);
+        }
+
         $product = $productRepository->find($id);
 
         if (!$product) {
-            throw $this->createNotFoundException('Le produit n\'existe pas');
+            return new JsonResponse(['message' => 'Produit non trouvé'], 404);
         }
 
         $basket = $basketRepository->findOneBy(['user' => $user]);
@@ -93,7 +99,7 @@ class BasketController extends AbstractController
             $entityManager->persist($basket);
         }
 
-        $quantity = $request->request->get('quantity', 1); // Default quantity to 1 if not provided
+        $quantity = $request->request->get('quantity', 1);
         $item = null;
 
         if ($basket->hasProduct($product)) {
@@ -109,9 +115,11 @@ class BasketController extends AbstractController
         }
 
         $entityManager->flush();
+        $totalItems = $user->countItemsInBasket();
 
         return new JsonResponse([
-            'redirectUrl' => $this->generateUrl('app_product')
+            'message' => 'Produit ajouté au panier avec succès',
+            'cartItemsCount' => $totalItems
         ]);
     }
 

@@ -217,6 +217,26 @@ hr .new1 {
     cursor: pointer;
 }
 
+@keyframes modalZoomIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.modal.fade.show .modal-dialog {
+    animation: modalZoomIn 0.3s ease-out;
+}
+
 /*
 ===========================================MOBILE============================================
 */
