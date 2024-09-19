@@ -79,7 +79,7 @@ $(document).ready(function () {
         badges.forEach(function (badge) {
             var newCount = badge.currentCount - itemQuantity;
             badge.$element.text(newCount >= 0 ? newCount : 0);
-            flag = newCount;
+            flagEmpty = newCount;
         });
 
         if (flagEmpty === 0) {
