@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Basket;
 use App\Entity\BasketItem;
+use App\Entity\User;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,20 +70,25 @@ class BasketController extends AbstractController
      * @param ProductRepository $productRepository The repository for product entities.
      * @param BasketRepository $basketRepository The repository for basket entities.
      * @param EntityManagerInterface $entityManager The entity manager for persisting changes.
-     * @return RedirectResponse The redirect response to the product page.
      */
-    #[Route('/mon-panier/{id}/add', name: 'add_item')]
+    #[Route('/mon-panier/{id}/add', name: 'add_item', methods: ['POST'])]
     public function addBasketItem(
         int                    $id,
+        Request                $request,
         ProductRepository      $productRepository,
         BasketRepository       $basketRepository,
         EntityManagerInterface $entityManager
-    ): RedirectResponse {
+    ): JsonResponse {
         $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            return new JsonResponse(['message' => 'Utilisateur non connecté ou non valide'], 400);
+        }
+
         $product = $productRepository->find($id);
 
         if (!$product) {
-            throw $this->createNotFoundException('Le produit n\'existe pas');
+            return new JsonResponse(['message' => 'Produit non trouvé'], 404);
         }
 
         $basket = $basketRepository->findOneBy(['user' => $user]);
@@ -93,24 +99,28 @@ class BasketController extends AbstractController
             $entityManager->persist($basket);
         }
 
-        //Initialisation de $item
+        $quantity = $request->request->get('quantity', 1);
         $item = null;
 
         if ($basket->hasProduct($product)) {
             $item = $basket->getItemForProduct($product);
-            $item->setQuantity($item->getQuantity() + 1);
+            $item->setQuantity($item->getQuantity() + $quantity);
         } else {
             $item = new BasketItem();
             $item->setProduct($product);
-            $item->setQuantity(1);
+            $item->setQuantity($quantity);
             $item->setPrice($product->getPrice());
             $basket->addItem($item);
             $entityManager->persist($item);
         }
 
         $entityManager->flush();
+        $totalItems = $user->countItemsInBasket();
 
-        return $this->redirectToRoute('app_product');
+        return new JsonResponse([
+            'message' => 'Produit ajouté au panier avec succès',
+            'cartItemsCount' => $totalItems
+        ]);
     }
 
     /**
