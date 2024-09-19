@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
             $product->setActive($faker->boolean);
             $product->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-1 month', 'now')));
             $product->setRentalCounter(0);
-            $product->setPicture($faker->imageUrl());
+            $product->setPicture('img/no_picture.jpg');
 
             $manager->persist($product);
             $products[] = $product;
