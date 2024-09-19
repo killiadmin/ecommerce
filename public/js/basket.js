@@ -8,7 +8,7 @@ $(document).ready(function () {
 
         toggleDeleteButton($this, false);
 
-        // Envoi de la requête Ajax
+        // Sending Ajax request
         $.ajax({
             url: $this.attr("href"),
             type: "POST",
@@ -19,7 +19,7 @@ $(document).ready(function () {
                     return;
                 }
 
-                // Mise à jour l'affichage après la suppression
+                // Update display after deletion
                 handleItemRemoval($row, $this);
             },
             error: function () {
@@ -29,7 +29,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Fonction utilitaire pour activer/désactiver le bouton de suppression
+     * Utility function to enable/disable delete button
      * @param $button
      * @param enable
      */
@@ -42,7 +42,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Fonction pour afficher un message d'erreur et restaurer le bouton
+     * Function to display error message and restore button
      * @param $button
      * @param message
      */
@@ -52,7 +52,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Fonction pour gérer la suppression d'un article
+     * Function to manage the deletion of an article
      * @param $row
      */
     function handleItemRemoval($row) {
@@ -62,7 +62,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Fonction pour mettre à jour les badges
+     * Function to update badges
      * @param itemQuantity
      */
     function updateBadgeQuantities(itemQuantity) {
@@ -74,9 +74,16 @@ $(document).ready(function () {
             { $element: badgeQuantityMobile, currentCount: parseInt(badgeQuantityMobile.text(), 10) || 0 }
         ];
 
+        var flagEmpty = ""
+
         badges.forEach(function (badge) {
             var newCount = badge.currentCount - itemQuantity;
             badge.$element.text(newCount >= 0 ? newCount : 0);
+            flag = newCount;
         });
+
+        if (flagEmpty === 0) {
+            $(".table-custom tbody").append($("<tr>").attr({colspan: 4}).text("Votre panier est vide "));
+        }
     }
 });
