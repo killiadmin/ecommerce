@@ -10,9 +10,14 @@
         {% endif %}
         {% for product in products %}
             <div class="col-12 col-md-6 col-lg-4 mb-4 mx-auto my-5" style="max-width: 370px;">
-                <div class="card border w-100 shadow" style="height: 560px;">
-                    <img src="{{ product.picture | default('img/no_picture.jpg') }}" class="card-img-top"
-                         alt="{{ product.title }}">
+                <div class="card border w-100 shadow" style="height: 532px;">
+                    {% if product.picture ==  'img/no_picture.jpg' %}
+                        <img src="{{ product.picture }}" class="card-img-top"
+                             alt="{{ product.title }}">
+                    {% else %}
+                        <img src="{{ vich_uploader_asset(product, 'pictureFile') }}" class="card-img-top"
+                             alt="{{ product.title }}">
+                    {% endif %}
                     <div class="card-body overflow-hidden" style="max-height: 120px;">
                         <h5 class="card-title">{{ product.title }}</h5>
                         <p class="card-text">{{ product.description }}</p>

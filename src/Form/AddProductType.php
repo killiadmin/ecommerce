@@ -6,11 +6,13 @@ use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class AddProductType extends AbstractType
 {
@@ -52,16 +54,17 @@ class AddProductType extends AbstractType
                 ],
                 'required' => true
             ])
-            /*->add('picture', FileType::class, [
+            ->add('pictureFile', FileType::class, [
                 'label' => 'Pictures',
-                'multiple' => false,
-                'required' => false,
-                'data_class' => null,
+                'label_attr' => [
+                    'class' => 'fw-bold'
+                ],
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control mb-5'
                 ]
-            ])*/
+            ])
             ->add('price', NumberType::class, [
+                'label' => 'Prix',
                 'attr' => [
                     'class' => 'form-control mb-5'
                 ],
