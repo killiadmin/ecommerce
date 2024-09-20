@@ -7,6 +7,7 @@ use App\Form\AddProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,7 +47,6 @@ class ProductController extends AbstractController
 
         if ($addProductForm->isSubmitted() && $addProductForm->isValid()) {
             $product->setRentalCounter(0);
-            $product->setPicture('img/no_picture.jpg');
             $product->setCreatedAt(new \DateTimeImmutable());
             $product->setStock(0);
 

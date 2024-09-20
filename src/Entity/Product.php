@@ -7,8 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable()]
 class  Product
 {
     #[ORM\Id]
@@ -27,6 +31,10 @@ class  Product
 
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
+
+    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'picture')]
+    #[Assert\Image()]
+    private ?File $pictureFile = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
     private ?string $price = null;
@@ -193,6 +201,18 @@ class  Product
     public function setStock(?int $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getPictureFile(): ?File
+    {
+        return $this->pictureFile;
+    }
+
+    public function setPictureFile(?File $pictureFile): static
+    {
+        $this->pictureFile = $pictureFile;
 
         return $this;
     }
