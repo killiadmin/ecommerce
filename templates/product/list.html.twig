@@ -9,8 +9,8 @@
             </div>
         {% endif %}
         {% for product in products %}
-            <div class="col-12 col-md-6 col-lg-4 mb-4 mx-auto my-5" style="max-width:370px;">
-                <div class="card border w-100 shadow">
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mx-auto my-5" style="max-width: 370px;">
+                <div class="card border w-100 shadow" style="height: 560px;">
                     <img src="{{ product.picture | default('img/no_picture.jpg') }}" class="card-img-top"
                          alt="{{ product.title }}">
                     <div class="card-body overflow-hidden" style="max-height: 120px;">
