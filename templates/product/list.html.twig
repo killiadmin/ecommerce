@@ -15,8 +15,8 @@
                         <img src="{{ product.picture }}" class="card-img-top"
                              alt="{{ product.title }}">
                     {% else %}
-                        <img src="{{ vich_uploader_asset(product, 'pictureFile') }}" class="card-img-top"
-                             alt="{{ product.title }}">
+                        <img src="{{ vich_uploader_asset(product, 'pictureFile') | imagine_filter('thumb_294x294') }}"
+                             alt="{{ product.title }}" class="card-img-top">
                     {% endif %}
                     <div class="card-body overflow-hidden" style="max-height: 120px;">
                         <h5 class="card-title">{{ product.title }}</h5>
