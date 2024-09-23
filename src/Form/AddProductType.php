@@ -61,7 +61,8 @@ class AddProductType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control mb-5'
-                ]
+                ],
+                'required' => false,
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Prix',

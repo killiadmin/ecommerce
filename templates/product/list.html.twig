@@ -11,12 +11,15 @@
         {% for product in products %}
             <div class="col-12 col-md-6 col-lg-4 mb-4 mx-auto my-5" style="max-width: 370px;">
                 <div class="card border w-100 shadow" style="height: 532px;">
-                    {% if product.picture ==  'img/no_picture.jpg' %}
-                        <img src="{{ product.picture }}" class="card-img-top"
-                             alt="{{ product.title }}">
+                    {% set picturePath = vich_uploader_asset(product, 'pictureFile') %}
+                    {% set displayPicture = product.picture %}
+                    {% if displayPicture is empty %}
+                        {% set displayPicture = 'img/no_picture.jpg' %}
+                    {% endif %}
+                    {% if displayPicture == 'img/no_picture.jpg' or picturePath is empty %}
+                        <img src="{{ displayPicture }}" class="card-img-top" alt="{{ product.title }}">
                     {% else %}
-                        <img src="{{ vich_uploader_asset(product, 'pictureFile') | imagine_filter('thumb_294x294') }}"
-                             alt="{{ product.title }}" class="card-img-top">
+                        <img src="{{ picturePath | imagine_filter('thumb_294x294') }}" alt="{{ product.title }}" class="card-img-top">
                     {% endif %}
                     <div class="card-body overflow-hidden" style="max-height: 120px;">
                         <h5 class="card-title">{{ product.title }}</h5>

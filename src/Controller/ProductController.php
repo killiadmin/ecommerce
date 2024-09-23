@@ -60,4 +60,21 @@ class ProductController extends AbstractController
             'AddProduct' => $addProductForm->createView(),
         ]);
     }
+
+    #[Route('/product/delete/{id}', name: 'delete_product')]
+    public function deleteProduct($id, EntityManagerInterface $entityManager): Response
+    {
+        $product = $entityManager->getRepository(Product::class)->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException('Product not found!');
+        }
+
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Produit supprimé avec succès.');
+
+        return $this->redirectToRoute('app_product');
+    }
 }

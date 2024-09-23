@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use AllowDynamicProperties;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[AllowDynamicProperties] #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[Vich\Uploadable()]
 class  Product
 {
@@ -29,7 +30,7 @@ class  Product
     #[ORM\Column(length: 255)]
     private ?string $category = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
     #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'picture')]
@@ -108,7 +109,7 @@ class  Product
         return $this->picture;
     }
 
-    public function setPicture(string $picture): static
+    public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
 
