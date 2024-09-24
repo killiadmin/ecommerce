@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2 class="text-center mb-4">Contactez-nous</h2>
+
+                {{ form_start(contactForm, {'attr': {'class': 'form-contact'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(contactForm.firstname_contact) }}
+                    {{ form_widget(contactForm.firstname_contact) }}
+                    {{ form_errors(contactForm.firstname_contact) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(contactForm.lastname_contact) }}
+                    {{ form_widget(contactForm.lastname_contact) }}
+                    {{ form_errors(contactForm.lastname_contact) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(contactForm.email_contact) }}
+                    {{ form_widget(contactForm.email_contact) }}
+                    {{ form_errors(contactForm.email_contact) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(contactForm.object_msg) }}
+                    {{ form_widget(contactForm.object_msg) }}
+                    {{ form_errors(contactForm.object_msg) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(contactForm.content_msg) }}
+                    {{ form_widget(contactForm.content_msg) }}
+                    {{ form_errors(contactForm.content_msg) }}
+                </div>
+
+                <div class="d-flex flex-row-reverse gap-2">
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </div>
+
+                {{ form_end(contactForm) }}
+
+                <div class="mt-4 text-center">
+                    <p><strong>Email:</strong> killian@ecommerce.com</p>
+                    <p><strong>Téléphone:</strong> +33 6 12 34 56 78</p>
+                    <p><strong>Adresse:</strong> 14 Rue de l'ecommerce, 14000 Caen, France</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
