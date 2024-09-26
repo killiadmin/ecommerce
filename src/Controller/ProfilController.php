@@ -20,28 +20,34 @@ class ProfilController extends AbstractController
         $this->security = $security;
     }
 
+    /**
+     * Profil user
+     *
+     * @return Response
+     */
     #[Route('/profil', name: 'app_profil')]
     public function profil(): Response
     {
-        // Get the logged in user
         $user = $this->security->getUser();
 
-        // Check if a user is logged in
         if ($user) {
             return $this->render('profil/profil.html.twig', [
                 'user' => $user,
             ]);
         }
 
-        // Redirect to login if there's no user
         return $this->redirectToRoute('app_login');
     }
 
     /**
-     * Edit user profile.
+     * Handles the profile editing process for a logged-in user.
      *
-     * @param Request $request The request object.
-     * @param EntityManagerInterface $entityManager The entity manager.
+     * This method retrieves the current user, generates a list of available avatar choices,
+     * and processes the profile edit form. If the form is successfully submitted and valid,
+     * the user's data is persisted in the database, and the user is redirected to their profile page.
+     *
+     * @param Request $request The HTTP request instance containing form data.
+     * @param EntityManagerInterface $entityManager The entity manager for database operations.
      *
      * @return Response
      */
@@ -54,7 +60,19 @@ class ProfilController extends AbstractController
         $user = $this->security->getUser();
 
         if ($user instanceof User) {
-            $editProfilForm = $this->createForm(EditProfilType::class, $user);
+            $avatarDir = __DIR__ . '/../../public/img/avatar/';
+            $avatars = array_map('basename', glob($avatarDir . 'avatar_*.png'));
+
+            $avatarsChoices = [];
+            foreach ($avatars as $avatar) {
+                $avatarName = pathinfo($avatar, PATHINFO_FILENAME);
+                $avatarsChoices[$avatarName] = $avatar;
+            }
+
+            $editProfilForm = $this->createForm(EditProfilType::class, $user, [
+                'avatars' => $avatarsChoices
+            ]);
+
             $editProfilForm->handleRequest($request);
 
             if ($editProfilForm->isSubmitted() && $editProfilForm->isValid()) {
