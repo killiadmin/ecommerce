@@ -129,8 +129,8 @@
                     {% if app.user %}
                         <li class="nav-item me-3 me-lg-1">
                             <a class="nav-link d-sm-flex align-items-sm-center fs-5" href="{{ path("app_profil") }}">
-                                    <img src="img/avatar/{{ app.user.avatar }}" class="rounded-circle absolute"
-                                         height="35" alt="avatar" loading="lazy" style="right: 150px;"/>
+                                <img src="{{ asset('img/avatar/' ~ app.user.avatar) }}" class="rounded-circle absolute"
+                                     height="35" alt="avatar" loading="lazy" style="right: 150px;"/>
                                 <strong class="d-none d-sm-block ms-1">
                                     {% if app.user.firstname %}
                                         {{ app.user.firstname }}
