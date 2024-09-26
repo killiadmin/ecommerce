@@ -11,17 +11,51 @@
             {% endif %}
         </h1>
     </div>
-    {{ form_start(EditProfil, {'attr': {'class': 'w-25 mx-auto'}}) }}
-    {{ form_row(EditProfil.email) }}
-    {{ form_row(EditProfil.firstname) }}
-    {{ form_row(EditProfil.lastname) }}
-    <div class="d-flex flex-row-reverse">
-        <button type="submit" class="btn btn-success mt-3">
-            Valider
-        </button>
-        <a class="btn btn-secondary mt-3 me-3" href={{ path("app_profil") }}>
-            Annuler
-        </a>
+    <div class="container w-25">
+        {{ form_start(EditProfil) }}
+        {{ form_row(EditProfil.email) }}
+        {{ form_row(EditProfil.firstname) }}
+        {{ form_row(EditProfil.lastname) }}
+
+        <div class="form-group">
+            <label for="avatars"></label>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle float-end" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sélectionner un avatar
+                </button>
+                <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton" style="width: 500px;">
+                    <div class="container">
+                        <div class="row">
+                            {% for avatar in EditProfil.avatar %}
+                            <div class="col-3 text-center mb-2">
+                                <a class="dropdown-item p-0" href="#" style="cursor: pointer;">
+                                    {{ form_widget(avatar, { 'attr': { 'style': 'display: none;' } }) }}
+                                    <img src="/img/avatar/{{ avatar.vars.value }}" alt="{{ avatar.vars.label }}"
+                                         class="img-thumbnail rounded-circle" height="100" width="100"/>
+                                </a>
+                            </div>
+
+                            {% if loop.index % 4 == 0 %}
+                        </div>
+                        <div class="row">
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row-reverse mt-5">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+        {{ form_end(EditProfil) }}
     </div>
-    {{ form_end(EditProfil) }}
+
+
+    <div style="height:100px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/profil.js') }}"></script>
 {% endblock %}
