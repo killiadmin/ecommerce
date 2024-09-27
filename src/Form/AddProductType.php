@@ -45,9 +45,16 @@ class AddProductType extends AbstractType
                     'class' => 'fw-bold'
                 ],
                 'choices' => [
-                    '1' => '1',
-                    '2' => '2',
-                    '3' => '3',
+                    'Électronique' => 'Électronique',
+                    'Mode et Vêtements' => 'Mode et Vêtements',
+                    'Beauté et Soins Personnels' => 'Beauté et Soins Personnels',
+                    'Maison et Décoration' => 'Maison et Décoration',
+                    'Alimentation et Boissons' => 'Alimentation et Boissons',
+                    'Sport et Loisirs' => 'Sport et Loisirs',
+                    'Jouets et Jeux' => 'Jouets et Jeux',
+                    'Santé et Bien-être' => 'Santé et Bien-être',
+                    'Auto et Moto' => 'Auto et Moto',
+                    'Livres et Papeterie' => 'Livres et Papeterie',
                 ],
                 'attr' => [
                     'class' => 'form-control mb-5'

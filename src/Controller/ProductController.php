@@ -21,8 +21,18 @@ class ProductController extends AbstractController
     {
         $request->getSession()->set('last_page', $request->getUri());
 
+        $products = $productRepository->findAllProduct();
+
+        $categories = [];
+        foreach ($products as $product) {
+            if (!in_array($product->getCategory(), $categories, true)) {
+                $categories[] = $product->getCategory();
+            }
+        }
+
         return $this->render('product/product.html.twig', [
-            'products' => $productRepository->findAllProduct(),
+            'products' => $products,
+            'categories' => $categories,
         ]);
     }
 
