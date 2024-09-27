@@ -54,12 +54,27 @@ class AppFixtures extends Fixture
 
         // Create the products
         $products = [];
+
+        // List category
+        $categories = [
+            'Électronique',
+            'Mode et Vêtements',
+            'Beauté et Soins Personnels',
+            'Maison et Décoration',
+            'Alimentation et Boissons',
+            'Sport et Loisirs',
+            'Jouets et Jeux',
+            'Santé et Bien-être',
+            'Auto et Moto',
+            'Livres et Papeterie',
+        ];
+
         for ($i = 1; $i <= 50; $i++) {
             $product = new Product();
             $product->setTitle($faker->text(16));
             $product->setDescription($faker->text(500));
             $product->setPrice($faker->randomFloat(2, 10, 100));
-            $product->setCategory($faker->randomElement(['A', 'B', 'C', 'D']));
+            $product->setCategory($faker->randomElement($categories));
             $product->setActive($faker->boolean);
             $product->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-1 month', 'now')));
             $product->setRentalCounter(0);
