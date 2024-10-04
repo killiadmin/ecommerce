@@ -6,7 +6,7 @@
         <div id="categoryMenu" class="product-category-menu">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"></a>
             {% for category in categories %}
-                <a href="#" onclick="filterProducts('{{ category }}')">
+                <a href="#" class="maskCategory" onclick="filterProducts('{{ category }}')">
                     {{ category }}
                 </a>
             {% endfor %}
