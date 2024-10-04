@@ -298,6 +298,26 @@ hr .new1 {
     z-index: 1;
 }
 
+.table-custom .col-1 {
+    width: 20%;
+}
+
+.table-custom .col-2 {
+    width: 50%;
+}
+
+.table-custom .col-3 {
+    width: 10%;
+}
+
+.table-custom .col-4 {
+    width: 10%;
+}
+
+.table-custom .col-5 {
+    width: 10%;
+}
+
 .pointer {
     cursor: pointer;
 }
