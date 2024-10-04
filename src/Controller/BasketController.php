@@ -124,6 +124,66 @@ class BasketController extends AbstractController
     }
 
     /**
+     * This method updates the quantity of a specific item in the user's basket.
+     *
+     * @param Request $request
+     * @param int $id
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return JsonResponse The response containing the status of the update and any relevant messages or data
+     * @throws \JsonException
+     */
+    #[Route('/mon-panier/update/{id}', name: 'update_item', methods: ['PUT'])]
+    public function updateQuantity(
+        Request                $request,
+        int                    $id,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $newQuantity = (int)($content['quantity'] ?? 1);
+        $user = $this->getUser();
+
+        if (!$user) {
+            return new JsonResponse(['success' => false, 'message' => 'User not authenticated'], 401);
+        }
+
+        $basket = $user->getBasket();
+
+        if (!($basket instanceof Basket)) {
+            return new JsonResponse(['success' => false, 'message' => 'Invalid basket type'], 400);
+        }
+
+        $items = $basket->getItems();
+
+        foreach ($items as $item) {
+            if ($item->getId() === $id) {
+                if (!($item instanceof BasketItem)) {
+                    return new JsonResponse(['success' => false, 'message' => 'Invalid item type in basket'], 400);
+                }
+
+                $oldQuantity = $item->getQuantity();
+
+                $item->setQuantity($newQuantity);
+
+                $entityManager->persist($item);
+                $entityManager->flush();
+
+                $itemQuantityChange = $newQuantity - $oldQuantity;
+
+                return new JsonResponse([
+                    'success' => true,
+                    'itemQuantityChange' => $itemQuantityChange,
+                    'newQuantity' => $newQuantity,
+                    'message' => 'Quantity updated successfully'
+                ]);
+            }
+        }
+
+        return new JsonResponse(['success' => false, 'message' => 'Item not found in basket'], 404);
+    }
+
+    /**
      * This method removes an item from the user's basket.
      *
      * @param EntityManagerInterface $em The entity manager to manage the removal of the item
