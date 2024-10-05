@@ -129,4 +129,27 @@ class Basket
 
         return null;
     }
+
+    public function getItemCount(): int
+    {
+        return $this->items->count();
+    }
+
+    public function getTotalQuantity(): int
+    {
+        $totalQuantity = 0;
+        foreach ($this->items as $item) {
+            $totalQuantity += $item->getQuantity();
+        }
+        return $totalQuantity;
+    }
+
+    public function getTotalPrice(): float
+    {
+        $totalPrice = 0.0;
+        foreach ($this->items as $item) {
+            $totalPrice += $item->getPrice() * $item->getQuantity();
+        }
+        return $totalPrice;
+    }
 }

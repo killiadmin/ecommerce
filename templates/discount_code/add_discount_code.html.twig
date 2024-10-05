@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un code de réduction{% endblock %}
+
+{% block body %}
+    <div class="container w-50">
+        <div class="text-center mb-5">
+            <h1>Ajouter un nouveau code de réduction</h1>
+        </div>
+
+        {# Ouverture du formulaire #}
+        {{ form_start(AddDiscountCode) }}
+
+        <div>
+            {# Champ pour le code de réduction #}
+            {{ form_label(AddDiscountCode.name_code) }}
+            {{ form_widget(AddDiscountCode.name_code) }}
+            {{ form_errors(AddDiscountCode.name_code) }}
+        </div>
+
+        <div>
+            {# Champ pour la réduction en pourcentage #}
+            {{ form_label(AddDiscountCode.reduction) }}
+            {{ form_widget(AddDiscountCode.reduction) }}
+            {{ form_errors(AddDiscountCode.reduction) }}
+        </div>
+
+        <div>
+            {# Champ pour l'activation (actif/inactif) #}
+            {{ form_label(AddDiscountCode.active) }}
+            {{ form_widget(AddDiscountCode.active) }}
+            {{ form_errors(AddDiscountCode.active) }}
+        </div>
+
+        <div>
+            {# Bouton de soumission du formulaire #}
+            <button type="submit" class="btn btn-primary">Ajouter le code de réduction</button>
+        </div>
+
+        {# Fermeture du formulaire #}
+        {{ form_end(AddDiscountCode) }}
+    </div>
+{% endblock %}
