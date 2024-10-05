@@ -50,10 +50,16 @@ class BasketController extends AbstractController
         if ($basket) {
             $basketItems = $basket->getItems();
             $basketIsEmpty = $basketItems->isEmpty();
+            $totalQuantity = $basket->getTotalQuantity();
+            $totalPrice = $basket->getTotalPrice();
+            $totalCount = $basket->getItemCount();
 
             return $this->render('basket/basket.html.twig', [
                 'basketItems' => $basketItems,
                 'basketIsEmpty' => $basketIsEmpty,
+                'totalQuantity' => $totalQuantity,
+                'totalPrice' => $totalPrice,
+                'totalCount' => $totalCount,
             ]);
         }
 
