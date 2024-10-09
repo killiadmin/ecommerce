@@ -152,4 +152,13 @@ class Basket
         }
         return $totalPrice;
     }
+
+    public function getTotalPriceTtc(): float
+    {
+        $totalPriceTtc = 0.0;
+        foreach ($this->items as $item) {
+            $totalPriceTtc += $item->getPriceTva() * $item->getQuantity();
+        }
+        return $totalPriceTtc;
+    }
 }

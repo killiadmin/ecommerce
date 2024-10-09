@@ -26,6 +26,9 @@ class BasketItem
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $price_tva = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class BasketItem
     public function setPrice(string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getPriceTva(): ?string
+    {
+        return $this->price_tva;
+    }
+
+    public function setPriceTva(string $price_tva): static
+    {
+        $this->price_tva = $price_tva;
 
         return $this;
     }

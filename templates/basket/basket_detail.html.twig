@@ -37,7 +37,7 @@
                         {{ item.product.price }} €
                     </td>
                     <td class="quantity col-5 text-center">
-                        99 €
+                        {{ item.product.priceTva }} €
                         <a href="{{ path('delete_item', {'id' : item.id }) }}"
                            title="Supprimer {{ item.product.title }} ?"
                            class="delete-item border p-2 shadow text-danger pointer bg-white"
@@ -74,7 +74,7 @@
                     {{ totalPrice }} €
                 </td>
                 <td class="col-5 text-center">
-                    0 €
+                    {{ totalPriceTtc }} €
                 </td>
             </tr>
             </tbody>
