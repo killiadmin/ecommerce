@@ -52,6 +52,7 @@ class BasketController extends AbstractController
             $basketIsEmpty = $basketItems->isEmpty();
             $totalQuantity = $basket->getTotalQuantity();
             $totalPrice = $basket->getTotalPrice();
+            $totalPriceTtc = $basket->getTotalPriceTtc();
             $totalCount = $basket->getItemCount();
 
             return $this->render('basket/basket.html.twig', [
@@ -59,6 +60,7 @@ class BasketController extends AbstractController
                 'basketIsEmpty' => $basketIsEmpty,
                 'totalQuantity' => $totalQuantity,
                 'totalPrice' => $totalPrice,
+                'totalPriceTtc' => $totalPriceTtc,
                 'totalCount' => $totalCount,
             ]);
         }
@@ -116,6 +118,7 @@ class BasketController extends AbstractController
             $item->setProduct($product);
             $item->setQuantity($quantity);
             $item->setPrice($product->getPrice());
+            $item->setPriceTva($product->getPriceTva());
             $basket->addItem($item);
             $entityManager->persist($item);
         }

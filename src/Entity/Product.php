@@ -40,6 +40,9 @@ class  Product
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
     private ?string $price = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
+    private ?string $price_tva = null;
+
     #[ORM\Column]
     private ?int $rental_counter = null;
 
@@ -112,18 +115,6 @@ class  Product
     public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
-
-        return $this;
-    }
-
-    public function getPrice(): ?string
-    {
-        return $this->price;
-    }
-
-    public function setPrice(string $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
@@ -214,6 +205,40 @@ class  Product
     public function setPictureFile(?File $pictureFile): static
     {
         $this->pictureFile = $pictureFile;
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): static
+    {
+        $this->price = $price;
+
+        $this->setPriceTva($this->calculatePriceWithVat($price));
+
+        return $this;
+    }
+
+    public function getPriceTva(): ?string
+    {
+        return $this->price_tva;
+    }
+
+    private function calculatePriceWithVat(string $price): string
+    {
+        $priceNumeric = (float)$price;
+        $priceWithVat = $priceNumeric * 1.20;
+
+        return number_format($priceWithVat, 2, '.', '');
+    }
+
+    public function setPriceTva(string $price_tva): static
+    {
+        $this->price_tva = $price_tva;
 
         return $this;
     }
