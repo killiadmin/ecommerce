@@ -172,7 +172,6 @@ class BasketController extends AbstractController
                 }
 
                 $oldQuantity = $item->getQuantity();
-
                 $item->setQuantity($newQuantity);
 
                 $entityManager->persist($item);
@@ -180,10 +179,16 @@ class BasketController extends AbstractController
 
                 $itemQuantityChange = $newQuantity - $oldQuantity;
 
+                // Retrieve price and Tva price
+                $itemPrice = $item->getPrice();
+                $itemTva = $item->getPriceTva();
+
                 return new JsonResponse([
                     'success' => true,
                     'itemQuantityChange' => $itemQuantityChange,
                     'newQuantity' => $newQuantity,
+                    'itemPrice' => $itemPrice,
+                    'itemTva' => $itemTva,
                     'message' => 'Quantity updated successfully'
                 ]);
             }

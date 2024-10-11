@@ -64,6 +64,7 @@ function handleItemRemoval($row) {
     const itemQuantity = parseInt($row.find(".quantity[data-quantity]").data("quantity"), 10);
     $row.remove();
     updateBadgeQuantitiesFromRemove(itemQuantity);
+    updateTotalPrices();
 }
 
 /**
@@ -124,7 +125,6 @@ function debounceInput(selector, delay, callback) {
  */
 function updateQuantity(itemId, newQuantity) {
     const $row = $('tr[data-item-id="' + itemId + '"]');
-    let itemQuantity = parseInt($row.find(".quantity[data-quantity]").data("quantity"), 10);
 
     $.ajax({
         url: `/mon-panier/update/${itemId}`,
@@ -132,18 +132,56 @@ function updateQuantity(itemId, newQuantity) {
         contentType: "application/json",
         data: JSON.stringify({ quantity: newQuantity }),
         success: function (data) {
-            if (data.success) {
-                itemQuantity = data.newQuantity;
-                $row.find(".quantity[data-quantity]").data("quantity", itemQuantity);
-                updateBadgeQuantitiesFromChangeQuantity(data.itemQuantityChange);
-            } else {
-                alert(`Erreur : ${data.message}`);
+            if (!data.success) {
+                console.error("Erreur lors de la mise à jour : ", data.message);
             }
+
+            const itemPrice = parseFloat(data.itemPrice);
+            const itemTva = parseFloat(data.itemTva);
+
+            $row.find(".quantity[data-quantity]").data("quantity", data.newQuantity);
+
+            updateBadgeQuantitiesFromChangeQuantity(data.itemQuantityChange);
+
+            updateTotalPrices(itemPrice, itemTva, data.newQuantity);
         },
         error: function (error) {
             console.error("Erreur lors de la mise à jour : ", error);
         }
     });
+}
+
+/**
+ * Updates the total prices, total quantities, and total item count in the HTML elements.
+ *
+ * @return {void}
+ */
+function updateTotalPrices() {
+    let totalHT = 0;
+    let totalTTC = 0;
+    let totalQuantity = 0;
+    let totalCount = 0;
+
+    $("tr[data-item-id]").each(function () {
+        const itemPrice = parseFloat($(this).find(".price[data-price]").data("price"));
+        const itemTva = parseFloat($(this).find(".tva[data-tva]").data("tva"));
+        const itemQuantity = parseInt($(this).find(".quantity[data-quantity]").data("quantity"), 10);
+
+        if (!isNaN(itemPrice) && !isNaN(itemQuantity)) {
+            totalHT += itemPrice * itemQuantity;
+            totalQuantity += itemQuantity;
+            totalCount++;
+        }
+
+        if (!isNaN(itemTva)) {
+            totalTTC += itemTva * itemQuantity;
+        }
+    });
+
+    $("#totalCount").text(totalCount);
+    $("#totalQuantity").text(totalQuantity);
+    $("#totalPriceHt").text(totalHT + " €");
+    $("#totalPriceTtc").text(totalTTC + " €");
 }
 
 /**
