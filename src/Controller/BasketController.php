@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,43 +35,33 @@ class BasketController extends AbstractController
     #[Route('/mon-panier', name: 'app_basket')]
     public function listBasket(Request $request): Response
     {
-        // Get the current user
-        $user = $this->security->getUser();
+        $basket = $this->getUserBasket();
 
-        // If user is not logged in, redirect to login page
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
+        if (!$basket) {
+            return $this->render('basket/basket.html.twig', [
+                'basketIsEmpty' => true,
+            ]);
         }
 
         $request->getSession()->set('last_page', $request->getUri());
 
-        // Get the user's basket
-        $basket = $user->getBasket();
 
-        // Check if the basket exists and has items
-        if ($basket) {
-            $basketItems = $basket->getItems();
-            $basketIsEmpty = $basketItems->isEmpty();
-            $totalQuantity = $basket->getTotalQuantity();
-            $totalPrice = $basket->getTotalPrice();
-            $totalPriceTtc = $basket->getTotalPriceTtc();
-            $totalCount = $basket->getItemCount();
-            $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
+        $basketItems = $basket->getItems();
+        $basketIsEmpty = $basketItems->isEmpty();
+        $totalQuantity = $basket->getTotalQuantity();
+        $totalPrice = $basket->getTotalPrice();
+        $totalPriceTtc = $basket->getTotalPriceTtc();
+        $totalCount = $basket->getItemCount();
+        $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
 
-            return $this->render('basket/basket.html.twig', [
-                'basketItems' => $basketItems,
-                'basketIsEmpty' => $basketIsEmpty,
-                'totalQuantity' => $totalQuantity,
-                'totalPrice' => $totalPrice,
-                'totalPriceTtc' => $totalPriceTtc,
-                'totalCount' => $totalCount,
-                'totalPriceWithDiscount' => $totalPriceWithDiscount,
-            ]);
-        }
-
-        // If no basket exists for the user, render the basket template with an empty state
         return $this->render('basket/basket.html.twig', [
-            'basketIsEmpty' => true,
+            'basketItems' => $basketItems,
+            'basketIsEmpty' => $basketIsEmpty,
+            'totalQuantity' => $totalQuantity,
+            'totalPrice' => $totalPrice,
+            'totalPriceTtc' => $totalPriceTtc,
+            'totalCount' => $totalCount,
+            'totalPriceWithDiscount' => $totalPriceWithDiscount,
         ]);
     }
 
@@ -206,13 +197,25 @@ class BasketController extends AbstractController
      * @param EntityManagerInterface $em The entity manager to manage the removal of the item
      * @param BasketItem $item The item to be removed from the basket
      *
-     * @return JsonResponse The response that redirects to the user's basket after removing the item
+     * @return RedirectResponse|JsonResponse The response that redirects to the user's basket after removing the item
      */
     #[Route('/mon-panier/{id}/delete', name: 'delete_item')]
-    public function removeBasketItem(EntityManagerInterface $em, BasketItem $item): JsonResponse
+    public function removeBasketItem(EntityManagerInterface $em, BasketItem $item): RedirectResponse | JsonResponse
     {
+        $basket = $this->getUserBasket();
+
+        if ($basket instanceof RedirectResponse) {
+            return $basket;
+        }
+
         $em->remove($item);
         $em->flush();
+
+        if ($basket->getItemCount() === 0) {
+            $basket->setDiscountCode(null);
+            $em->persist($basket);
+            $em->flush();
+        }
 
         return new JsonResponse(['success' => true]);
     }
@@ -227,15 +230,13 @@ class BasketController extends AbstractController
     #[Route('/mon-panier/code', name: 'basket_discount_code', methods: ['POST'])]
     public function applyDiscountCode(Request $request, ManagerRegistry $doctrine): Response
     {
-        $discountCodeName = $request->request->get('promo_code');
+        $basket = $this->getUserBasket();
 
-        $user = $this->security->getUser();
-
-        $basket = $user->getBasket();
-
-        if (!$basket) {
-            throw $this->createNotFoundException('Basket not found');
+        if ($basket instanceof RedirectResponse) {
+            return $basket;
         }
+
+        $discountCodeName = $request->request->get('promo_code');
 
         $discountCode = $doctrine
             ->getRepository(DiscountCode::class)
@@ -253,5 +254,16 @@ class BasketController extends AbstractController
 
         $this->addFlash('error', 'Votre code promotionnel est incorrecte ou inactif');
         return $this->redirectToRoute('app_basket');
+    }
+
+    private function getUserBasket(): RedirectResponse | Basket
+    {
+        $user = $this->security->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $user->getBasket();
     }
 }
