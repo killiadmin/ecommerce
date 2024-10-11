@@ -33,10 +33,10 @@
                                    value="{{ item.quantity }}" data-item-id="{{ item.id }}" min="1">
                         </label>
                     </td>
-                    <td class="col-4 text-center">
+                    <td class="price col-4 text-center" data-price="{{ item.product.price }}">
                         {{ item.product.price }} €
                     </td>
-                    <td class="quantity col-5 text-center">
+                    <td class="tva quantity col-5 text-center" data-tva="{{ item.product.priceTva }}">
                         {{ item.product.priceTva }} €
                         <a href="{{ path('delete_item', {'id' : item.id }) }}"
                            title="Supprimer {{ item.product.title }} ?"
@@ -61,19 +61,19 @@
             </thead>
             <tbody>
             <tr>
-                <td class="col-1 text-center">
+                <td id="totalCount" class="col-1 text-center">
                     {{ totalCount }}
                 </td>
                 <td class="col-2">
                     &nbsp;
                 </td>
-                <td class="col-3 text-center">
+                <td id="totalQuantity" class="col-3 text-center">
                     {{ totalQuantity }}
                 </td>
-                <td class="col-4 text-center">
+                <td id="totalPriceHt" class="col-4 text-center">
                     {{ totalPrice }} €
                 </td>
-                <td class="col-5 text-center">
+                <td id="totalPriceTtc" class="col-5 text-center">
                     {{ totalPriceTtc }} €
                 </td>
             </tr>
