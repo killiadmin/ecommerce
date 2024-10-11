@@ -73,21 +73,37 @@
                 <td id="totalPriceHt" class="col-4 text-center">
                     {{ totalPrice }} €
                 </td>
-                <td id="totalPriceTtc" class="col-5 text-center">
-                    {{ totalPriceTtc }} €
-                </td>
+                {% if totalPriceTtc == totalPriceWithDiscount %}
+                    <td id="totalPriceTtc" class="col-5 text-center">
+                        {{ totalPriceTtc }} €
+                    </td>
+                {% else %}
+                    <td id="totalPriceTtc" class="col-5 text-center alert-success" title="Tarif réduit">
+                        {{ totalPriceWithDiscount }} €
+                    </td>
+                {% endif %}
             </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="input-group my-5 ms-auto w-50" style="max-width: 1000px">
-        <input type="text" name="promo_code" class="form-control" placeholder="Entrez le code promotionnel" aria-label="Code promotionnel">
-        <div class="ms-1 input-group-append">
-            <button class="btn btn-secondary" type="submit">Appliquer</button>
+    {% for type, messages in app.flashes %}
+        <div class="alert alert-{{ type }} mx-auto p-0 mt-5 shadow" style="max-width:1000px;">
+            {% for message in messages %}
+                <p class="mt-3 ms-5">{{ message }}</p>
+            {% endfor %}
         </div>
-        <div class="w-25"></div>
-    </div>
+    {% endfor %}
+
+    <form action="{{ path('basket_discount_code') }}" method="POST">
+        <div class="input-group my-5 ms-auto w-50" style="max-width: 1000px">
+            <input type="text" name="promo_code" class="form-control" placeholder="Entrez le code promotionnel" aria-label="Code promotionnel">
+            <div class="ms-1 input-group-append">
+                <button class="btn btn-secondary" type="submit">Appliquer</button>
+            </div>
+            <div class="w-25"></div>
+        </div>
+    </form>
 
     <div class="d-flex gap-3 mt-3 justify-content-between mx-auto w-75">
         <a class="btn btn-secondary shadow" href="{{ path('app_product') }}" role="button">
