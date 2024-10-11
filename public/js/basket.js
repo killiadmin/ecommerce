@@ -9,7 +9,7 @@ function setupDeleteItemHandler(selector) {
 
         const $this = $(this);
         const itemId = $this.data("item-id");
-        const $row = $('tr[data-item-id="' + itemId + '"]');
+        const $row = $(`tr[data-item-id="${itemId}"]`);
 
         toggleDeleteButton($this, false);
 
@@ -17,39 +17,39 @@ function setupDeleteItemHandler(selector) {
             url: $this.attr("href"),
             type: "POST",
             dataType: "json",
-            success: function (response) {
-                if (!response.success) {
-                    showAlertAndRestoreButton($this, "Une erreur est survenue lors de la suppression de l'article.");
-                    return;
-                }
-
-                //Updating display after deletion
-                handleItemRemoval($row, $this);
-            },
-            error: function () {
-                showAlertAndRestoreButton($this, "Une erreur est survenue lors de la suppression de l'article.");
-            }
+            success: (response) => handleDeleteResponse(response, $this, $row),
+            error: () => showAlertAndRestoreButton($this, "Une erreur est survenue lors de la suppression de l'article.")
         });
     });
 }
 
 /**
- * Utility function to enable/disable delete button
- * @param $button
- * @param enable
+ * Handles the response for item deletion.
+ * @param {object} response
+ * @param {object} $button
+ * @param {object} $row
  */
-function toggleDeleteButton($button, enable) {
-    if (enable) {
-        $button.addClass("delete-item");
-    } else {
-        $button.removeClass("delete-item");
+function handleDeleteResponse(response, $button, $row) {
+    if (!response.success) {
+        showAlertAndRestoreButton($button, "Une erreur est survenue lors de la suppression de l'article.");
+        return;
     }
+    handleItemRemoval($row);
 }
 
 /**
- * Function to display error message and restore button
- * @param $button
- * @param message
+ * Utility function to enable/disable delete button.
+ * @param {object} $button
+ * @param {boolean} enable
+ */
+function toggleDeleteButton($button, enable) {
+    $button.toggleClass("delete-item", enable);
+}
+
+/**
+ * Function to display error message and restore button.
+ * @param {object} $button
+ * @param {string} message
  */
 function showAlertAndRestoreButton($button, message) {
     alert(message);
@@ -57,23 +57,22 @@ function showAlertAndRestoreButton($button, message) {
 }
 
 /**
- * Function to manage the deletion of an article
- * @param $row
+ * Function to manage the deletion of an article.
+ * @param {object} $row
  */
 function handleItemRemoval($row) {
     const itemQuantity = parseInt($row.find(".quantity[data-quantity]").data("quantity"), 10);
     $row.remove();
-    updateBadgeQuantitiesFromRemove(itemQuantity);
+    updateBadgeQuantities(itemQuantity, "remove");
     updateTotalPrices();
 }
 
 /**
- * Updates the quantities displayed on badge elements for both desktop and mobile views
- * when an item is removed from the basket
+ * Updates the badge quantities for both desktop and mobile views.
  * @param {number} itemQuantity
- * @return {void}
+ * @param {string} action "remove" or "change"
  */
-function updateBadgeQuantitiesFromRemove(itemQuantity) {
+function updateBadgeQuantities(itemQuantity, action) {
     const badgeQuantityDesk = $("#badge-quantity-desk");
     const badgeQuantityMobile = $("#badge-quantity-mobile");
 
@@ -82,16 +81,16 @@ function updateBadgeQuantitiesFromRemove(itemQuantity) {
         { $element: badgeQuantityMobile, currentCount: parseInt(badgeQuantityMobile.text(), 10) || 0 }
     ];
 
-    let flagEmpty = ""
+    let flagEmpty = "";
 
     badges.forEach(function (badge) {
-        const newCount = badge.currentCount - itemQuantity;
-        badge.$element.text(newCount >= 0 ? newCount : 0);
+        const newCount = action === "remove" ? badge.currentCount - itemQuantity : badge.currentCount + itemQuantity;
+        badge.$element.text(Math.max(newCount, 0));
         flagEmpty = newCount;
     });
 
     if (flagEmpty === 0) {
-        $("#myBasket").append($("<tr>").attr({colspan: 4}).text("Votre panier est vide "));
+        $("#myBasket").append($("<tr>").attr({ colspan: 4 }).text("Votre panier est vide "));
     }
 }
 
@@ -124,37 +123,38 @@ function debounceInput(selector, delay, callback) {
  * @return {void}
  */
 function updateQuantity(itemId, newQuantity) {
-    const $row = $('tr[data-item-id="' + itemId + '"]');
+    const $row = $(`tr[data-item-id="${itemId}"]`);
 
     $.ajax({
         url: `/mon-panier/update/${itemId}`,
         type: "PUT",
         contentType: "application/json",
         data: JSON.stringify({ quantity: newQuantity }),
-        success: function (data) {
-            if (!data.success) {
-                console.error("Erreur lors de la mise à jour : ", data.message);
-            }
-
-            const itemPrice = parseFloat(data.itemPrice);
-            const itemTva = parseFloat(data.itemTva);
-
-            $row.find(".quantity[data-quantity]").data("quantity", data.newQuantity);
-
-            updateBadgeQuantitiesFromChangeQuantity(data.itemQuantityChange);
-
-            updateTotalPrices(itemPrice, itemTva, data.newQuantity);
-        },
-        error: function (error) {
-            console.error("Erreur lors de la mise à jour : ", error);
-        }
+        success: (data) => handleQuantityUpdateSuccess(data, $row),
+        error: (error) => console.error("Erreur lors de la mise à jour : ", error)
     });
 }
 
 /**
+ * Handles the success of a quantity update.
+ * @param {object} data
+ * @param {object} $row
+ */
+function handleQuantityUpdateSuccess(data, $row) {
+    if (!data.success) {
+        console.error("Erreur lors de la mise à jour : ", data.message);
+        return;
+    }
+
+    const { itemPrice, itemTva, newQuantity, itemQuantityChange } = data;
+
+    $row.find(".quantity[data-quantity]").data("quantity", newQuantity);
+    updateBadgeQuantities(itemQuantityChange, "change");
+    updateTotalPrices(itemPrice, itemTva, newQuantity);
+}
+
+/**
  * Updates the total prices, total quantities, and total item count in the HTML elements.
- *
- * @return {void}
  */
 function updateTotalPrices() {
     let totalHT = 0;
@@ -180,35 +180,11 @@ function updateTotalPrices() {
 
     $("#totalCount").text(totalCount);
     $("#totalQuantity").text(totalQuantity);
-    $("#totalPriceHt").text(totalHT + " €");
-    $("#totalPriceTtc").text(totalTTC + " €");
-}
-
-/**
- * Updates the badge quantities for both desktop and mobile views based on the change in item quantity.
- * @param {number} itemQuantityChange
- * @return {void}
- */
-function updateBadgeQuantitiesFromChangeQuantity(itemQuantityChange) {
-    const badgeQuantityDesk = $("#badge-quantity-desk");
-    const badgeQuantityMobile = $("#badge-quantity-mobile");
-
-    const badges = [
-        { $element: badgeQuantityDesk, currentCount: parseInt(badgeQuantityDesk.text(), 10) || 0 },
-        { $element: badgeQuantityMobile, currentCount: parseInt(badgeQuantityMobile.text(), 10) || 0 }
-    ];
-
-    let totalQuantity = 0;
-
-    badges.forEach(function (badge) {
-        const newCount = badge.currentCount + itemQuantityChange;
-        badge.$element.text(newCount >= 0 ? newCount : 0);
-        totalQuantity = newCount;
-    });
+    $("#totalPriceHt").text(`${totalHT} €`);
+    $("#totalPriceTtc").text(`${totalTTC} €`);
 }
 
 $(document).ready(function () {
     setupDeleteItemHandler(".delete-item");
-
     debounceInput(".quantity-input", 400, updateQuantity);
 });
