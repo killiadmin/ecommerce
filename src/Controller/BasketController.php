@@ -4,14 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Basket;
 use App\Entity\BasketItem;
+use App\Entity\DiscountCode;
 use App\Entity\User;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -54,6 +55,7 @@ class BasketController extends AbstractController
             $totalPrice = $basket->getTotalPrice();
             $totalPriceTtc = $basket->getTotalPriceTtc();
             $totalCount = $basket->getItemCount();
+            $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
 
             return $this->render('basket/basket.html.twig', [
                 'basketItems' => $basketItems,
@@ -62,6 +64,7 @@ class BasketController extends AbstractController
                 'totalPrice' => $totalPrice,
                 'totalPriceTtc' => $totalPriceTtc,
                 'totalCount' => $totalCount,
+                'totalPriceWithDiscount' => $totalPriceWithDiscount,
             ]);
         }
 
@@ -212,5 +215,43 @@ class BasketController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * This method applies a discount code to the user's basket.
+     *
+     * @param Request $request
+     * @param ManagerRegistry $doctrine
+     * @return Response
+     */
+    #[Route('/mon-panier/code', name: 'basket_discount_code', methods: ['POST'])]
+    public function applyDiscountCode(Request $request, ManagerRegistry $doctrine): Response
+    {
+        $discountCodeName = $request->request->get('promo_code');
+
+        $user = $this->security->getUser();
+
+        $basket = $user->getBasket();
+
+        if (!$basket) {
+            throw $this->createNotFoundException('Basket not found');
+        }
+
+        $discountCode = $doctrine
+            ->getRepository(DiscountCode::class)
+            ->findOneBy(['name_code' => $discountCodeName]);
+
+        if ($discountCode && $discountCode->isActive()) {
+            $basket->setDiscountCode($discountCode);
+            $em = $doctrine->getManager();
+            $em->persist($basket);
+            $em->flush();
+
+            $this->addFlash('success', 'Code de réduction appliqué avec succès');
+            return $this->redirectToRoute('app_basket');
+        }
+
+        $this->addFlash('error', 'Votre code promotionnel est incorrecte ou inactif');
+        return $this->redirectToRoute('app_basket');
     }
 }

@@ -31,6 +31,9 @@ class Basket
     #[ORM\OneToMany(targetEntity: BasketItem::class, mappedBy: 'basket', cascade: ['persist', 'remove'])]
     private Collection $items;
 
+    #[ORM\ManyToOne(targetEntity: DiscountCode::class)]
+    private ?DiscountCode $discountCode = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -144,6 +147,17 @@ class Basket
         return $totalQuantity;
     }
 
+    public function getDiscountCode(): ?DiscountCode
+    {
+        return $this->discountCode;
+    }
+
+    public function setDiscountCode(?DiscountCode $discountCode): static
+    {
+        $this->discountCode = $discountCode;
+        return $this;
+    }
+
     public function getTotalPrice(): float
     {
         $totalPrice = 0.0;
@@ -158,6 +172,16 @@ class Basket
         $totalPriceTtc = 0.0;
         foreach ($this->items as $item) {
             $totalPriceTtc += $item->getPriceTva() * $item->getQuantity();
+        }
+        return $totalPriceTtc;
+    }
+
+    public function getTotalPriceWithDiscount(): float
+    {
+        $totalPriceTtc = $this->getTotalPriceTtc();
+        if ($this->discountCode && $this->discountCode->isActive()) {
+            $reductionPercentage = $this->discountCode->getReduction();
+            $totalPriceTtc -= $totalPriceTtc * ($reductionPercentage / 100);
         }
         return $totalPriceTtc;
     }

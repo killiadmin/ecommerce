@@ -345,3 +345,15 @@ hr .new1 {
 /*
 ===========================================MOBILE============================================
 */
+
+/*
+===========================================MESSAGE_FLASH============================================
+ */
+
+.alert-success { background-color: #d4edda; }
+
+.alert-error { background-color: #f8d7da; }
+
+.alert-info { background-color: #d1ecf1; }
+
+.alert-warning { background-color: #fff3cd; }
