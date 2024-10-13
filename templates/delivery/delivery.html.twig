@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DeliveryController!{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">
+        Livraisons
+    </h1>
+    <div class="container">
+        <div class="container border">
+            <div class="p-3 d-flex">
+                <div class="border p-4 m-2 w-50 shadow">
+                    <h2>Adresse de livraison</h2>
+                    {% if address %}
+                        <p><strong>Numéro : </strong> {{ address.numberDelivery ?: 'N/A' }}</p>
+                        <p><strong>Rue : </strong> {{ address.libelleDelivery ?: 'N/A' }}</p>
+                        <p><strong>Code Postal : </strong> {{ address.codeDelivery ?: 'N/A' }}</p>
+                        <p><strong>Ville : </strong> {{ address.cityDelivery ?: 'N/A' }}</p>
+                    {% else %}
+                        <p>Aucune adresse de livraison trouvée.</p>
+                    {% endif %}
+                </div>
+                <div class="border p-4 m-2 w-50 shadow">
+                    <h2>Adresse de facturation</h2>
+                    {% if address %}
+                        <p><strong>Numéro : </strong> {{ address.numberBilling ?: 'N/A' }}</p>
+                        <p><strong>Rue : </strong> {{ address.libelleBilling ?: 'N/A' }}</p>
+                        <p><strong>Code Postal : </strong> {{ address.codeBilling ?: 'N/A' }}</p>
+                        <p><strong>Ville : </strong> {{ address.cityBilling ?: 'N/A' }}</p>
+                    {% else %}
+                        <p>Aucune adresse de facturation trouvée.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="p-3">
+                <div class="border p-4 m-2 w-100 shadow">
+                        <p class="m-0">
+                            <strong>Informations Complémentaires : </strong> {% if address %} {{ address.additionnalInformation ?: 'N/A' }} {% endif %}
+                        </p>
+                </div>
+            </div>
+
+            <div class="p-4">
+                Enregistrer votre nouvelle adresse :
+                <a class="btn btn-secondary btn-sm shadow" href="{{ path('app_delivery_add') }}">
+                    Ajouter
+                </a>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 mt-3 flex-row-reverse ms-auto w-75">
+            <a class="btn btn-info shadow" href="#" role="button">
+                Passer au paiement
+            </a>
+            <a class="btn btn-secondary shadow" href="{{ path('app_product') }}" role="button">
+                Annuler
+            </a>
+        </div>
+    </div>
+{% endblock %}

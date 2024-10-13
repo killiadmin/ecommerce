@@ -102,6 +102,7 @@ class AppFixtures extends Fixture
                 $basketItem->setProduct($product);
                 $basketItem->setQuantity($faker->numberBetween(1, 10));
                 $basketItem->setPrice($product->getPrice());
+                $basketItem->setPriceTva($product->getPrice() * 1.2);
 
                 $manager->persist($basketItem);
             }

@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Adresse de Livraison{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-2">Ajouter une Adresse de Livraison</h1>
+    <div class="container">
+        <div class="p-3 d-flex">
+            <div class="border p-4 m-2 w-50 shadow">
+                <h2>Adresse de livraison</h2>
+                {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="col-md-3">
+                        {{ form_row(form.number_delivery) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.libelle_delivery) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-3">
+                        {{ form_row(form.code_delivery) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.city_delivery) }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12">
+                        {{ form_row(form.billing) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border p-4 m-2 w-50 shadow billing-field">
+                <h2>Adresse de facturation</h2>
+                <div class="form-row billing-field">
+                    <div class="col-md-3">
+                        {{ form_row(form.number_billing) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.libelle_billing) }}
+                    </div>
+                </div>
+
+                <div class="form-row billing-field">
+                    <div class="col-md-3">
+                        {{ form_row(form.code_billing) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.city_billing) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row p-4 mx-4 border shadow">
+            <div class="col-md-6">
+                {{ form_row(form.additionnal_information) }}
+            </div>
+        </div>
+
+        <div class="d-flex flex-row-reverse gap-3 p-3">
+            <button type="submit" class="btn btn-primary">
+                Ajouter
+            </button>
+            <a class="btn btn-secondary" href={{ path('app_delivery') }}>
+                Annuler
+            </a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+    <script src="{{ asset('js/delivery.js') }}"></script>
+
+{% endblock %}

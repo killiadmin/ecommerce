@@ -18,7 +18,7 @@ final class Version20241010100024 extends AbstractMigration
     {
         $this->addSql('ALTER TABLE basket_item ADD price_tva NUMERIC(10, 2) DEFAULT NULL');
         $this->addSql('ALTER TABLE basket_item CHANGE price_tva price_tva NUMERIC(10, 2) DEFAULT NULL');
-        $this->addSql('ALTER TABLE product ADD price_tva NUMERIC(10, 0) NOT NULL');
+        $this->addSql('ALTER TABLE product ADD price_tva NUMERIC(10, 0) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
