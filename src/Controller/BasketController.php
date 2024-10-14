@@ -158,6 +158,7 @@ class BasketController extends AbstractController
         }
 
         $items = $basket->getItems();
+        $itemFound = false;
 
         foreach ($items as $item) {
             if ($item->getId() === $id) {
@@ -169,23 +170,28 @@ class BasketController extends AbstractController
                 $item->setQuantity($newQuantity);
 
                 $entityManager->persist($item);
-                $entityManager->flush();
 
                 $itemQuantityChange = $newQuantity - $oldQuantity;
 
-                // Retrieve price and Tva price
                 $itemPrice = $item->getPrice();
                 $itemTva = $item->getPriceTva();
 
-                return new JsonResponse([
+                $itemFound = true;
+
+                $responsePayload = [
                     'success' => true,
                     'itemQuantityChange' => $itemQuantityChange,
                     'newQuantity' => $newQuantity,
                     'itemPrice' => $itemPrice,
                     'itemTva' => $itemTva,
                     'message' => 'Quantity updated successfully'
-                ]);
+                ];
             }
+        }
+
+        if ($itemFound) {
+            $entityManager->flush();
+            return new JsonResponse($responsePayload);
         }
 
         return new JsonResponse(['success' => false, 'message' => 'Item not found in basket'], 404);

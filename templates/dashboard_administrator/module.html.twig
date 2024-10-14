@@ -1,19 +1,29 @@
 <div class="container border p-5">
-    <div class="d-flex flex-row-reverse m-2">
-        <a class="dropdown-item border p-2 bg-info text-white shadow rounded w-25 text-center"
-           href="{{ path('app_discount_code') }}">
-            Créer un code de réduction
-        </a>
+    <div class="my-3 m-2">
+        <h2>Actions</h2>
+    </div>
+    <div class="d-flex m-2 gap-2">
         <a class="dropdown-item border p-2 bg-secondary text-white shadow rounded w-25 text-center"
            href="{{ path('new_product') }}">
             Créer un produit +
         </a>
+        <a class="dropdown-item border p-2 bg-info text-white shadow rounded w-25 text-center"
+           href="{{ path('app_discount_code') }}">
+            Créer un code de réduction
+        </a>
     </div>
-    <div class="d-flex w-100 mt-3">
+    <div class="d-flex justify-content-evenly w-100 m-2 align-items-center">
+        <div class="my-3">
+            <h2>Liste des produits</h2>
+        </div>
+        <div class="my-3">
+            <h2>Liste des utilisateurs</h2>
+        </div>
+    </div>
+    <div class="d-flex w-100 m-2 gap-5">
         <div class="border w-50 p-3 overflow-scroll" style="max-height:400px;">
-            Liste produits
                 {% for product in products %}
-                    <div class="d-flex p-3">
+                    <div class="d-flex py-3">
                         <div class="card border shadow mb-2" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title"
@@ -23,13 +33,63 @@
                             </div>
                         </div>
                         <div>
-                            <a href="#" class="btn btn-warning ms-3" style="max-height:40px;">Modifier</a>
+                            {#<a href="#" class="btn btn-warning ms-3" style="max-height:40px;">Modifier</a>#}
                             <a href="{{ path('delete_product', {'id': product.id}) }}" class="btn btn-danger text-light ms-3" style="max-height:40px;">Supprimer</a>
                         </div>
                     </div>
                 {% endfor %}
         </div>
-        <div class="border w-50 p-3">Liste Utilisateurs</div>
+        <div class="border w-50 p-3 overflow-scroll" style="max-height:400px;">
+            {% for user in users %}
+                <div class="d-flex py-3">
+                    <div class="card border shadow mb-2" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title"
+                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ user.email }}</h5>
+                            <p class="card-text"
+                               style="height: 70px; overflow: hidden; text-overflow: ellipsis; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">{{ user.firstname }} {{ user.lastname }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        {#<a href="#" class="btn btn-warning ms-3" style="max-height:40px;">Modifier</a>#}
+                        <a href="#" class="btn btn-danger text-light ms-3" style="max-height:40px;">Supprimer</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="d-flex justify-content-evenly w-100 m-2 align-items-center">
+        <div class="my-3">
+            <h2>Codes de réduction</h2>
+        </div>
+    </div>
+    <div class="border w-100 overflow-scroll" style="max-height:400px;">
+        <table class="w-100 text-center">
+            <thead>
+            <tr class="bg-custom3 text-white">
+                <th>Code de Réduction</th>
+                <th>Réduction (%)</th>
+                <th>Actif</th>
+                <th>Nombre d'Usages</th>
+                <th>Date de Création</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for discount in discounts %}
+                <tr>
+                    <td>{{ discount.nameCode }}</td>
+                    <td>{{ discount.reduction }}</td>
+                    <td>{{ discount.active ? 'Oui' : 'Non' }}</td>
+                    <td>{{ discount.nbUsage }}</td>
+                    <td>{{ discount.createdAt|date('Y-m-d H:i:s') }}</td>
+                    <td><a href="#" class="btn btn-info"><i class="fa-solid fa-power-off"></i></a></td>
+                    <td><a href="#" class="btn btn-danger"><i class="fa-solid fa-xmark"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 <div style="height: 100px;"></div>
