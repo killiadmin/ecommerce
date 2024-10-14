@@ -16,8 +16,6 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    // src/Repository/ProductRepository.php
-
     public function findAllProduct(): array
     {
         return $this->createQueryBuilder('p')
