@@ -11,7 +11,7 @@
                 <th class="col-2">Description</th>
                 <th class="col-3 text-center">Quantité</th>
                 <th class="col-4 text-center">Prix HT</th>
-                <th class="col-5 text-center">Prix TTC</th>
+                <th class="col-5 text-center{% if totalPrice == totalPriceWithDiscount %} bg-custom1 text-black{% endif %}">Prix TTC</th>
             </tr>
             </thead>
             <tbody>
@@ -73,16 +73,45 @@
                 <td id="totalPriceHt" class="col-4 text-center">
                     {{ totalPrice }} €
                 </td>
-                {% if totalPriceTtc == totalPriceWithDiscount %}
-                    <td id="totalPriceTtc" class="col-5 text-center">
-                        {{ totalPriceTtc }} €
-                    </td>
-                {% else %}
-                    <td id="totalPriceTtc" class="col-5 text-center alert-success" title="Tarif réduit">
-                        {{ totalPriceWithDiscount }} €
-                    </td>
-                {% endif %}
+                <td id="totalPriceTtc" class="col-5 text-center">
+                    {{ totalPriceTtc }} €
+                </td>
             </tr>
+
+            {% if totalPrice != totalPriceWithDiscount %}
+                <tr>
+                    <td colspan="5" class="border-custom2" style="text-align: end;">
+                        <span class="fw-bold">Vous bénéficiez de {{ valueDiscount }} % de réduction sur votre panier</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="3">&nbsp;</th>
+                    <th class="col-4 text-center">Total HT</th>
+                    <th class="col-5 text-center bg-custom1 text-black" style="padding: 10px;">Total TTC</th>
+                </tr>
+                <tr>
+                    <td class="col-1 border-custom2">
+                        &nbsp;
+                    </td>
+                    <td class="col-2 border-custom2">
+                        &nbsp;
+                    </td>
+                    <td class="col-3 border-bottom-custom2">
+                        &nbsp;
+                    </td>
+                    <td id="totalPriceHtWithDiscount" class="col-4 text-center position-relative"
+                        data-reduction="{{ valueDiscount }}">
+                        <span class="position-absolute" style="top:-5px; right:-5px;">
+                            <img src="img/icons/icon-discount.png" alt="">
+                        </span>
+                        <span class="total-price-ht-discount d-inline-block">{{ totalPriceWithDiscount }} €</span>
+                    </td>
+                    <td id="totalPriceTtcWithDiscount" class="col-5 text-center total-price-ttc-discount"
+                        data-reduction="{{ valueDiscount }}">
+                        {{ totalPriceTtcWithDiscount }} €
+                    </td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
     </div>
@@ -110,7 +139,7 @@
             Voir les produits
         </a>
         <a class="btn btn-success shadow" href="{{ path('app_delivery') }}" role="button">
-            Valider mon panier
+            Valider mon panier ( {{ totalPriceTtcWithDiscount }} € )
         </a>
     </div>
 </div>

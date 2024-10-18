@@ -37,31 +37,35 @@ class BasketController extends AbstractController
     {
         $basket = $this->getUserBasket();
 
-        if (!$basket) {
+        $request->getSession()->set('last_page', $request->getUri());
+
+        if ($basket instanceof Basket) {
+            $basketItems = $basket->getItems();
+
+            $basketIsEmpty = $basketItems->isEmpty();
+            $totalQuantity = $basket->getTotalQuantity();
+            $totalPrice = $basket->getTotalPrice();
+            $totalPriceTtc = $basket->getTotalPriceTtc();
+            $totalCount = $basket->getItemCount();
+            $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
+            $totalPriceTtcWithDiscount = $basket->getTotalPriceTtcWithDiscount();
+            $valueDiscount = $basket->getAppliedDiscountAmount();
+
             return $this->render('basket/basket.html.twig', [
-                'basketIsEmpty' => true,
+                'basketItems' => $basketItems,
+                'basketIsEmpty' => $basketIsEmpty,
+                'totalQuantity' => $totalQuantity,
+                'totalPrice' => $totalPrice,
+                'totalPriceTtc' => $totalPriceTtc,
+                'totalCount' => $totalCount,
+                'totalPriceWithDiscount' => $totalPriceWithDiscount,
+                'totalPriceTtcWithDiscount' => $totalPriceTtcWithDiscount,
+                'valueDiscount' => $valueDiscount,
             ]);
         }
 
-        $request->getSession()->set('last_page', $request->getUri());
-
-
-        $basketItems = $basket->getItems();
-        $basketIsEmpty = $basketItems->isEmpty();
-        $totalQuantity = $basket->getTotalQuantity();
-        $totalPrice = $basket->getTotalPrice();
-        $totalPriceTtc = $basket->getTotalPriceTtc();
-        $totalCount = $basket->getItemCount();
-        $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
-
         return $this->render('basket/basket.html.twig', [
-            'basketItems' => $basketItems,
-            'basketIsEmpty' => $basketIsEmpty,
-            'totalQuantity' => $totalQuantity,
-            'totalPrice' => $totalPrice,
-            'totalPriceTtc' => $totalPriceTtc,
-            'totalCount' => $totalCount,
-            'totalPriceWithDiscount' => $totalPriceWithDiscount,
+            'basketIsEmpty' => true,
         ]);
     }
 
@@ -184,7 +188,6 @@ class BasketController extends AbstractController
                     'newQuantity' => $newQuantity,
                     'itemPrice' => $itemPrice,
                     'itemTva' => $itemTva,
-                    'message' => 'Quantity updated successfully'
                 ];
             }
         }

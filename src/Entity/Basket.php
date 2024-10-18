@@ -141,9 +141,11 @@ class Basket
     public function getTotalQuantity(): int
     {
         $totalQuantity = 0;
+
         foreach ($this->items as $item) {
             $totalQuantity += $item->getQuantity();
         }
+
         return $totalQuantity;
     }
 
@@ -161,28 +163,55 @@ class Basket
     public function getTotalPrice(): float
     {
         $totalPrice = 0.0;
+
         foreach ($this->items as $item) {
             $totalPrice += $item->getPrice() * $item->getQuantity();
         }
-        return $totalPrice;
+
+        return ceil($totalPrice);
     }
 
     public function getTotalPriceTtc(): float
     {
         $totalPriceTtc = 0.0;
+
         foreach ($this->items as $item) {
             $totalPriceTtc += $item->getPriceTva() * $item->getQuantity();
         }
-        return $totalPriceTtc;
+
+        return floor($totalPriceTtc);
     }
 
     public function getTotalPriceWithDiscount(): float
     {
+        $totalPriceHt = $this->getTotalPrice();
+
+        if ($this->discountCode && $this->discountCode->isActive()) {
+            $reductionPercentage = $this->discountCode->getReduction();
+            $totalPriceHt -= $totalPriceHt * ($reductionPercentage / 100);
+        }
+
+        return ceil($totalPriceHt);
+    }
+
+    public function getTotalPriceTtcWithDiscount(): float
+    {
         $totalPriceTtc = $this->getTotalPriceTtc();
+
         if ($this->discountCode && $this->discountCode->isActive()) {
             $reductionPercentage = $this->discountCode->getReduction();
             $totalPriceTtc -= $totalPriceTtc * ($reductionPercentage / 100);
         }
-        return $totalPriceTtc;
+
+        return ceil($totalPriceTtc);
+    }
+
+    public function getAppliedDiscountAmount(): ?float
+    {
+        if ($this->discountCode && $this->discountCode->isActive()) {
+            return $this->discountCode->getReduction();
+        }
+
+        return null;
     }
 }

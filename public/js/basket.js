@@ -161,27 +161,34 @@ function updateTotalPrices() {
     let totalTTC = 0;
     let totalQuantity = 0;
     let totalCount = 0;
+    let discountPercent = parseFloat($("#totalPriceHtWithDiscount").data("reduction")) / 100;
+
+    const tvaRate = 1.2;
 
     $("tr[data-item-id]").each(function () {
-        const itemPrice = parseFloat($(this).find(".price[data-price]").data("price"));
-        const itemTva = parseFloat($(this).find(".tva[data-tva]").data("tva"));
+        const itemHTPrice = parseFloat($(this).find(".price[data-price]").data("price"));
         const itemQuantity = parseInt($(this).find(".quantity[data-quantity]").data("quantity"), 10);
 
-        if (!isNaN(itemPrice) && !isNaN(itemQuantity)) {
-            totalHT += itemPrice * itemQuantity;
+        if (!isNaN(itemHTPrice) && !isNaN(itemQuantity)) {
+            const itemTTCPrice = Math.ceil(itemHTPrice * tvaRate);
+            const itemTotalTTC = itemTTCPrice * itemQuantity;
+
+            totalHT += itemHTPrice * itemQuantity;
+            totalTTC += itemTotalTTC;
             totalQuantity += itemQuantity;
             totalCount++;
         }
-
-        if (!isNaN(itemTva)) {
-            totalTTC += itemTva * itemQuantity;
-        }
     });
+
+    const discountedTotalHT = totalHT * (1 - discountPercent);
+    const discountedTotalTTC = Math.ceil(discountedTotalHT * tvaRate);
 
     $("#totalCount").text(totalCount);
     $("#totalQuantity").text(totalQuantity);
-    $("#totalPriceHt").text(`${totalHT} €`);
-    $("#totalPriceTtc").text(`${totalTTC} €`);
+    $("#totalPriceHt").text(`${Math.ceil(totalHT)} €`);
+    $("#totalPriceTtc").text(`${Math.ceil(totalTTC)} €`);
+    $(".total-price-ht-discount").text(`${Math.ceil(discountedTotalHT)} €`);
+    $(".total-price-ttc-discount").text(`${discountedTotalTTC} €`);
 }
 
 $(document).ready(function () {

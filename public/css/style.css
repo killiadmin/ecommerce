@@ -1,17 +1,45 @@
 /*
-===========================================COLOR============================================
+===========================================COLOR DEFAUT============================================
 */
 
 .bg-custom1 {
-    background-color: #faa916;
+    background-color: #faa916 !important;
 }
 
 .bg-custom2 {
-    background-color: #fbfffe;
+    background-color: #fbfffe !important;
 }
 
 .bg-custom3 {
-    background-color: #6d676e;
+    background-color: #6d676e !important;
+}
+
+.color-custom1 {
+    color: #faa916 !important;
+}
+
+.color-custom2 {
+    color: #fbfffe !important;
+}
+
+.color-custom3 {
+    color: #6d676e !important;
+}
+
+.border-custom1 {
+    border: 1px solid #faa916 !important;
+}
+
+.border-custom2 {
+    border: 1px solid #fbfffe !important;
+}
+
+.border-custom3 {
+    border: 1px solid #6d676e !important;
+}
+
+.border-bottom-custom2 {
+    border-bottom: 1px solid #fbfffe !important;
 }
 
 /*
