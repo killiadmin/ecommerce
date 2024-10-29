@@ -8,15 +8,20 @@ use App\Entity\DiscountCode;
 use App\Entity\User;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
+use App\Service\BasketService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class BasketController extends AbstractController
 {
@@ -36,32 +41,41 @@ class BasketController extends AbstractController
     public function listBasket(Request $request): Response
     {
         $basket = $this->getUserBasket();
-
         $request->getSession()->set('last_page', $request->getUri());
 
         if ($basket instanceof Basket) {
             $basketItems = $basket->getItems();
 
-            $basketIsEmpty = $basketItems->isEmpty();
-            $totalQuantity = $basket->getTotalQuantity();
-            $totalPrice = $basket->getTotalPrice();
-            $totalPriceTtc = $basket->getTotalPriceTtc();
-            $totalCount = $basket->getItemCount();
-            $totalPriceWithDiscount = $basket->getTotalPriceWithDiscount();
-            $totalPriceTtcWithDiscount = $basket->getTotalPriceTtcWithDiscount();
-            $valueDiscount = $basket->getAppliedDiscountAmount();
-
-            return $this->render('basket/basket.html.twig', [
+            $data = [
                 'basketItems' => $basketItems,
-                'basketIsEmpty' => $basketIsEmpty,
-                'totalQuantity' => $totalQuantity,
-                'totalPrice' => $totalPrice,
-                'totalPriceTtc' => $totalPriceTtc,
-                'totalCount' => $totalCount,
-                'totalPriceWithDiscount' => $totalPriceWithDiscount,
-                'totalPriceTtcWithDiscount' => $totalPriceTtcWithDiscount,
-                'valueDiscount' => $valueDiscount,
-            ]);
+                'basketIsEmpty' => $basketItems->isEmpty(),
+                'totalQuantity' => $basket->getTotalQuantity(),
+                'totalPrice' => $basket->getTotalPrice(),
+                'totalPriceTtc' => $basket->getTotalPriceTtc(),
+                'totalCount' => $basket->getItemCount(),
+                'totalPriceWithDiscount' => $basket->getTotalPriceWithDiscount(),
+                'totalPriceTtcWithDiscount' => $basket->getTotalPriceTtcWithDiscount(),
+                'valueDiscount' => $basket->getAppliedDiscountAmount(),
+            ];
+
+            if ($request->isXmlHttpRequest()) {
+                $normalizer = new ObjectNormalizer();
+                $serializer = new Serializer([$normalizer]);
+
+                $normalizedBasketItems = $serializer->normalize($basketItems, null, [AbstractNormalizer::ATTRIBUTES => [
+                    'id', 'quantity', 'price', 'priceTva'
+                ]]);
+
+                $data['basketItems'] = $normalizedBasketItems;
+
+                return $this->json($data);
+            }
+
+            return $this->render('basket/basket.html.twig', $data);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->json(['basketIsEmpty' => true]);
         }
 
         return $this->render('basket/basket.html.twig', [
@@ -147,7 +161,7 @@ class BasketController extends AbstractController
         EntityManagerInterface $entityManager
     ): JsonResponse
     {
-        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $content = json_decode($request->getContent(), true);
         $newQuantity = (int)($content['quantity'] ?? 1);
         $user = $this->getUser();
 
@@ -170,31 +184,15 @@ class BasketController extends AbstractController
                     return new JsonResponse(['success' => false, 'message' => 'Invalid item type in basket'], 400);
                 }
 
-                $oldQuantity = $item->getQuantity();
                 $item->setQuantity($newQuantity);
-
                 $entityManager->persist($item);
-
-                $itemQuantityChange = $newQuantity - $oldQuantity;
-
-                $itemPrice = $item->getPrice();
-                $itemTva = $item->getPriceTva();
-
                 $itemFound = true;
-
-                $responsePayload = [
-                    'success' => true,
-                    'itemQuantityChange' => $itemQuantityChange,
-                    'newQuantity' => $newQuantity,
-                    'itemPrice' => $itemPrice,
-                    'itemTva' => $itemTva,
-                ];
             }
         }
 
         if ($itemFound) {
             $entityManager->flush();
-            return new JsonResponse($responsePayload);
+            return new JsonResponse(['success' => true]);
         }
 
         return new JsonResponse(['success' => false, 'message' => 'Item not found in basket'], 404);
@@ -203,13 +201,11 @@ class BasketController extends AbstractController
     /**
      * This method removes an item from the user's basket.
      *
-     * @param EntityManagerInterface $em The entity manager to manage the removal of the item
      * @param BasketItem $item The item to be removed from the basket
-     *
      * @return RedirectResponse|JsonResponse The response that redirects to the user's basket after removing the item
      */
     #[Route('/mon-panier/{id}/delete', name: 'delete_item')]
-    public function removeBasketItem(EntityManagerInterface $em, BasketItem $item): RedirectResponse | JsonResponse
+    public function removeBasketItem(BasketItem $item, BasketService $basketService): RedirectResponse | JsonResponse
     {
         $basket = $this->getUserBasket();
 
@@ -217,16 +213,7 @@ class BasketController extends AbstractController
             return $basket;
         }
 
-        $em->remove($item);
-        $em->flush();
-
-        if ($basket->getItemCount() === 0) {
-            $basket->setDiscountCode(null);
-            $em->persist($basket);
-            $em->flush();
-        }
-
-        return new JsonResponse(['success' => true]);
+        return $basketService->removeBasketItem($item, $basket);
     }
 
     /**
