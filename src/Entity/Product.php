@@ -37,11 +37,11 @@ class  Product
     #[Assert\Image()]
     private ?File $pictureFile = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
-    private ?string $price = null;
+    #[ORM\Column(type: 'float', precision: 10, scale: 2)]
+    private ?float $price = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
-    private ?string $price_tva = null;
+    #[ORM\Column(type: 'float', precision: 10, scale: 2)]
+    private ?float $price_tva = null;
 
     #[ORM\Column]
     private ?int $rental_counter = null;
@@ -209,37 +209,37 @@ class  Product
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(float $price): static
     {
-        $this->price = $price;
+        $this->price = round($price,2);
 
-        $this->setPriceTva($this->calculatePriceWithVat($price));
+        $this->setPriceTva($this->calculatePriceWithTva($price));
 
         return $this;
     }
 
-    public function getPriceTva(): ?string
+    public function getPriceTva(): ?float
     {
         return $this->price_tva;
     }
 
-    private function calculatePriceWithVat(string $price): string
+    public function setPriceTva(float $price_tva): static
     {
-        $priceNumeric = (float)$price;
+        $this->price_tva = round($price_tva, 2);
+
+        return $this;
+    }
+
+    private function calculatePriceWithTva(float $price): float
+    {
+        $priceNumeric = $price;
         $priceWithVat = $priceNumeric * 1.20;
 
         return round($priceWithVat, 2);
-    }
-
-    public function setPriceTva(string $price_tva): static
-    {
-        $this->price_tva = $price_tva;
-
-        return $this;
     }
 }

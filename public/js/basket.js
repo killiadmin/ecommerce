@@ -139,11 +139,11 @@ function basketQuantityUpdate(data) {
         let $itemRow = $(`tr[data-item-id="${item.id}"]`);
 
         if ($itemRow !== null) {
-            const totalPriceHt = item.price * item.quantity;
-            const totalPriceTtc = item.priceTva * item.quantity;
+            const totalPriceHt = Math.round(item.price * item.quantity * 100) / 100;
+            const totalPriceTtc = Math.round(item.priceTva * item.quantity * 100) / 100;
 
-            $itemRow.find(".price").text(totalPriceHt + " €").attr("data-price", totalPriceHt);
-            $itemRow.find(".tva").contents().first().replaceWith(totalPriceTtc + " €").attr("data-tva", totalPriceTtc);
+            $itemRow.find(".price").text(totalPriceHt.toFixed(2) + " €").attr("data-price", totalPriceHt.toFixed(2));
+            $itemRow.find(".tva").contents().first().replaceWith(totalPriceTtc.toFixed(2) + " €").attr("data-tva", totalPriceTtc.toFixed(2));
 
             totalUpdatedQuantity += item.quantity;
         }
