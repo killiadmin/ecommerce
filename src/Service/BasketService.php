@@ -35,4 +35,17 @@ class BasketService
 
         return new JsonResponse(['success' => true]);
     }
+
+    /**
+     * Cancels the discount code associated with the given basket.
+     *
+     * @param mixed $basket
+     * @return void
+     */
+    public function cancelDiscountCode(mixed $basket): void
+    {
+        $basket->setDiscountCode(null);
+        $this->em->persist($basket);
+        $this->em->flush();
+    }
 }

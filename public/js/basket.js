@@ -86,17 +86,20 @@ function updateBadgeQuantities(itemQuantity, action) {
 
     badges.forEach(function (badge) {
         let newCount;
+
         if (action === "remove") {
             newCount = badge.currentCount - itemQuantity;
         } else {
             newCount = itemQuantity;
         }
+
         badge.$element.text(Math.max(newCount, 0));
         flagEmpty = newCount;
     });
 
-    if (flagEmpty === 0) {
-        $("#myBasket").append($("<tr>").attr({ colspan: 4 }).text("Votre panier est vide "));
+    if (flagEmpty === 0 && !$("#myBasket tr").hasClass("empty-row")) {
+        $("#myBasket").append(
+            $("<tr>").addClass("empty-row").attr({ colspan: 4 }).text("Votre panier est vide"));
     }
 }
 
