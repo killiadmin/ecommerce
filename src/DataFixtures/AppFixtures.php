@@ -32,7 +32,7 @@ class AppFixtures extends Fixture
         $userAdmin->setLastname('Administrator');
         $userAdmin->setRoles(['ROLE_ADMIN']);
         $userAdmin->setAgree(1);
-        $userAdmin->setAvatar('avatar_OO1.png');
+        $userAdmin->setAvatar('avatar_001.png');
         $userAdmin->setCreatedAt(new \DateTimeImmutable());
 
         $manager->persist($userAdmin);
@@ -75,7 +75,7 @@ class AppFixtures extends Fixture
             $product = new Product();
             $product->setTitle($faker->text(16));
             $product->setDescription($faker->text(500));
-            $product->setPrice($faker->randomFloat(2, 10, 100));
+            $product->setPrice(99.99);
             $product->setCategory($faker->randomElement($categories));
             $product->setActive($faker->boolean);
             $product->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-1 month', 'now')));

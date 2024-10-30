@@ -23,11 +23,11 @@ class BasketItem
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $price = null;
+    #[ORM\Column(type: 'float', precision: 10, scale: 2)]
+    private ?float $price = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $price_tva = null;
+    #[ORM\Column(type: 'float', precision: 10, scale: 2)]
+    private ?float $price_tva = null;
 
     public function getId(): ?int
     {
@@ -70,26 +70,26 @@ class BasketItem
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(float $price): static
     {
-        $this->price = $price;
+        $this->price = round($price,2);
 
         return $this;
     }
 
-    public function getPriceTva(): ?string
+    public function getPriceTva(): ?float
     {
         return $this->price_tva;
     }
 
-    public function setPriceTva(string $price_tva): static
+    public function setPriceTva(float $price_tva): static
     {
-        $this->price_tva = $price_tva;
+        $this->price_tva = round($price_tva, 2);
 
         return $this;
     }
