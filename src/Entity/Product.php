@@ -233,7 +233,7 @@ class  Product
         $priceNumeric = (float)$price;
         $priceWithVat = $priceNumeric * 1.20;
 
-        return ceil($priceWithVat);
+        return round($priceWithVat, 2);
     }
 
     public function setPriceTva(string $price_tva): static

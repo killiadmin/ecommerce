@@ -133,9 +133,16 @@
         <a class="btn btn-secondary shadow" href="{{ path('app_product') }}" role="button">
             Voir les produits
         </a>
-        <a class="btn btn-success shadow" href="{{ path('app_delivery') }}" role="button">
-            Valider mon panier ( {{ totalPriceTtcWithDiscount }} € )
-        </a>
+        <div>
+            {% if totalPrice != totalPriceWithDiscount %}
+                <a class="btn btn-danger shadow" href="{{ path('basket_discount_code_cancel') }}" role="button">
+                    Annuler ma réduction
+                </a>
+            {% endif %}
+            <a class="btn btn-success shadow" href="{{ path('app_delivery') }}" role="button">
+                Valider mon panier ( {{ totalPriceTtcWithDiscount }} € )
+            </a>
+        </div>
     </div>
 </div>
 

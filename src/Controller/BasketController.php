@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,10 +25,12 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class BasketController extends AbstractController
 {
     private Security $security;
+    private BasketService $basketService;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, BasketService $basketService)
     {
         $this->security = $security;
+        $this->basketService = $basketService;
     }
 
     /**
@@ -213,7 +214,7 @@ class BasketController extends AbstractController
             return $basket;
         }
 
-        return $basketService->removeBasketItem($item, $basket);
+        return $this->basketService->removeBasketItem($item, $basket);
     }
 
     /**
@@ -249,6 +250,21 @@ class BasketController extends AbstractController
         }
 
         $this->addFlash('error', 'Votre code promotionnel est incorrecte ou inactif');
+        return $this->redirectToRoute('app_basket');
+    }
+
+    /**
+     * This method cancels the discount code applied to the basket.
+     *
+     * @return Response
+     */
+    #[Route('/mon-panier/code/cancel', name: 'basket_discount_code_cancel')]
+    public function cancelDiscountCode(): Response
+    {
+        $basket = $this->getUserBasket();
+
+        $this->basketService->cancelDiscountCode($basket);
+
         return $this->redirectToRoute('app_basket');
     }
 

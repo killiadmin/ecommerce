@@ -168,7 +168,7 @@ class Basket
             $totalPrice += $item->getPrice() * $item->getQuantity();
         }
 
-        return ceil($totalPrice);
+        return round($totalPrice, 2);
     }
 
     public function getTotalPriceTtc(): float
@@ -179,7 +179,7 @@ class Basket
             $totalPriceTtc += $item->getPriceTva() * $item->getQuantity();
         }
 
-        return floor($totalPriceTtc);
+        return round($totalPriceTtc, 2);
     }
 
     public function getTotalPriceWithDiscount(): float
@@ -191,7 +191,7 @@ class Basket
             $totalPriceHt -= $totalPriceHt * ($reductionPercentage / 100);
         }
 
-        return ceil($totalPriceHt);
+        return round($totalPriceHt, 2);
     }
 
     public function getTotalPriceTtcWithDiscount(): float
@@ -203,7 +203,7 @@ class Basket
             $totalPriceTtc -= $totalPriceTtc * ($reductionPercentage / 100);
         }
 
-        return ceil($totalPriceTtc);
+        return round($totalPriceTtc, 2);
     }
 
     public function getAppliedDiscountAmount(): ?float
