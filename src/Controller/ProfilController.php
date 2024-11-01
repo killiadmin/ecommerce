@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\EditProfilType;
+use App\Service\ProfilService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,9 +32,10 @@ class ProfilController extends AbstractController
     {
         $user = $this->security->getUser();
 
-        if ($user) {
+        if ($user instanceof User) {
             return $this->render('profil/profil.html.twig', [
                 'user' => $user,
+                'isProfessional' => $user->isProfessional(),
             ]);
         }
 
@@ -88,5 +91,22 @@ class ProfilController extends AbstractController
         return $this->render('profil/profil_edit.html.twig', [
             'EditProfil' => $editProfilForm->createView(),
         ]);
+    }
+
+    /**
+     * Toggles the user role and returns the operation result in a JSON response.
+     *
+     * @param ProfilService $profilService
+     * @return JsonResponse
+     */
+    #[\Symfony\Component\Routing\Annotation\Route('/profil/account', name: 'profil_account', methods: ['POST'])]
+    public function toggleAccountMode(ProfilService $profilService): JsonResponse
+    {
+        $result = $profilService->toggleAccountMode();
+
+        return new JsonResponse([
+                'success' => $result['success'],
+                'isProfessional' => $result['isProfessional'] ?? null
+        ], $result['status']);
     }
 }
