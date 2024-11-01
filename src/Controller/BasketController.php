@@ -18,9 +18,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class BasketController extends AbstractController
 {
@@ -45,30 +42,10 @@ class BasketController extends AbstractController
         $request->getSession()->set('last_page', $request->getUri());
 
         if ($basket instanceof Basket) {
-            $basketItems = $basket->getItems();
+            $httpRequest = $request->isXmlHttpRequest();
+            $data = $this->basketService->getBasketData($basket, $httpRequest);
 
-            $data = [
-                'basketItems' => $basketItems,
-                'basketIsEmpty' => $basketItems->isEmpty(),
-                'totalQuantity' => $basket->getTotalQuantity(),
-                'totalPrice' => $basket->getTotalPrice(),
-                'totalPriceTtc' => $basket->getTotalPriceTtc(),
-                'totalCount' => $basket->getItemCount(),
-                'totalPriceWithDiscount' => $basket->getTotalPriceWithDiscount(),
-                'totalPriceTtcWithDiscount' => $basket->getTotalPriceTtcWithDiscount(),
-                'valueDiscount' => $basket->getAppliedDiscountAmount(),
-            ];
-
-            if ($request->isXmlHttpRequest()) {
-                $normalizer = new ObjectNormalizer();
-                $serializer = new Serializer([$normalizer]);
-
-                $normalizedBasketItems = $serializer->normalize($basketItems, null, [AbstractNormalizer::ATTRIBUTES => [
-                    'id', 'quantity', 'price', 'priceTva'
-                ]]);
-
-                $data['basketItems'] = $normalizedBasketItems;
-
+            if ($httpRequest) {
                 return $this->json($data);
             }
 

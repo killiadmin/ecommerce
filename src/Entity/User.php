@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserAddress::class, mappedBy: 'user_associated', orphanRemoval: true)]
     private Collection $userAddresses;
 
+    #[ORM\Column]
+    private ?bool $professional = null;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
@@ -227,6 +230,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userAddress->setUserAssociated(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isProfessional(): ?bool
+    {
+        return $this->professional;
+    }
+
+    public function setProfessional(bool $professional): static
+    {
+        $this->professional = $professional;
 
         return $this;
     }
