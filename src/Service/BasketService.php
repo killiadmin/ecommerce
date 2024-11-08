@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Basket;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\BasketItem;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
@@ -16,10 +17,12 @@ use Symfony\Component\Serializer\Serializer;
 class BasketService
 {
     private EntityManagerInterface $em;
+    private Security $security;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, Security $security,)
     {
         $this->em = $em;
+        $this->security = $security;
     }
 
     /**
@@ -34,9 +37,15 @@ class BasketService
      */
     public function getBasketData(Basket $basket, bool $httpRequest): array
     {
+        $user = $this->security->getUser();
         $basketItems = $basket->getItems();
 
+        $userData = [
+            'isProfessional' => $user->isProfessional(),
+        ];
+
         $data = [
+            'user' => $userData,
             'basketItems' => $basketItems,
             'basketIsEmpty' => $basketItems->isEmpty(),
             'totalQuantity' => $basket->getTotalQuantity(),

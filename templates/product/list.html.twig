@@ -39,8 +39,15 @@
                         {% endif %}
                         <div class="card-body overflow-hidden" style="max-height: 120px;">
                             <div class="d-flex flex-row justify-content-between">
-                                <h5 class="card-title">{{ product.title }}</h5>
-                                <spans class="fw-bold"> {{ product.price }} €</spans>
+                                <div class="d-flex overflow-hidden" style="max-width: 180px;">
+                                    <h5 class="card-title text-truncate" title="{{ product.title }}">{{ product.title }}</h5>
+                                </div>
+                                <div>
+                                    {% if user.professional %}
+                                        <span class="color-custom3" title="Prix HT"> {{ product.price }}€ - </span>
+                                    {% endif %}
+                                    <span class="fw-bold" title="Prix TTC"> {{ product.priceTva }}€</span>
+                                </div>
                             </div>
                             <p class="card-text">{{ product.description }}</p>
                         </div>
