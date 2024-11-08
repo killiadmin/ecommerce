@@ -10,8 +10,16 @@
                 <th class="col-1">Articles</th>
                 <th class="col-2">Description</th>
                 <th class="col-3 text-center">Quantité</th>
-                <th class="col-4 text-center">Prix HT</th>
-                <th class="col-5 text-center{% if totalPrice == totalPriceWithDiscount %} bg-custom1 text-black{% endif %}">Prix TTC</th>
+                {% if user.isProfessional %}
+                    <th class="col-4 text-center">Prix HT</th>
+                {% endif %}
+                <th class="col-5 text-center{% if totalPrice == totalPriceWithDiscount %} bg-custom1 text-black{% endif %}">
+                    {% if user.isProfessional %}
+                        Prix TTC
+                    {% else %}
+                        Prix
+                    {% endif %}
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -33,9 +41,11 @@
                                    value="{{ item.quantity }}" data-item-id="{{ item.id }}" min="1">
                         </label>
                     </td>
-                    <td class="price col-4 text-center" data-price="{{ item.product.price }}">
-                        {{ item.product.price * item.quantity }} €
-                    </td>
+                    {% if user.isProfessional %}
+                        <td class="price col-4 text-center" data-price="{{ item.product.price }}">
+                            {{ item.product.price * item.quantity }} €
+                        </td>
+                    {% endif %}
                     <td class="tva quantity col-5 text-center" data-tva="{{ item.product.priceTva }}">
                         {{ item.product.priceTva * item.quantity }} €
                         <a href="{{ path('delete_item', {'id' : item.id }) }}"
@@ -55,8 +65,12 @@
                 <th class="bg-custom1 text-black col-1 text-center border-custom1">Total <br> Article</th>
                 <th class="bg-custom1 text-black col-2 border-custom1">&nbsp;</th>
                 <th class="bg-custom1 text-black col-3 text-center border-custom1">Total <br> Quantité</th>
-                <th class="bg-custom1 text-black col-4 text-center border-custom1">Total <br> HT</th>
-                <th class="bg-custom1 text-black col-5 text-center border-custom1">Total <br> TTC</th>
+                {% if user.isProfessional %}
+                    <th class="bg-custom1 text-black col-4 text-center border-custom1">Total <br> HT</th>
+                    <th class="bg-custom1 text-black col-5 text-center border-custom1">Total <br> TTC</th>
+                {% else %}
+                    <th class="bg-custom1 text-black col-5 text-center border-custom1">Total <br> Montant</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -76,6 +90,7 @@
                     <td id="totalQuantity" class="col-3 text-center">
                         {{ totalQuantity }}
                     </td>
+                    {% if user.isProfessional %}
                     <td id="totalPriceHtWithDiscount" class="col-4 text-center position-relative"
                         data-reduction="{{ valueDiscount }}">
                         <span class="position-absolute" style="top:-5px; right:-5px;">
@@ -87,6 +102,15 @@
                         data-reduction="{{ valueDiscount }}">
                         {{ totalPriceTtcWithDiscount }} €
                     </td>
+                    {% else %}
+                        <td id="totalPriceTtcWithDiscount" class="col-4 text-center position-relative"
+                            data-reduction="{{ valueDiscount }}">
+                            <span class="position-absolute" style="top:-5px; right:-5px;">
+                                <img src="img/icons/icon-discount.png" alt="">
+                            </span>
+                            <span class="d-inline-block total-price-ttc-discount">{{ totalPriceTtcWithDiscount }} €</span>
+                        </td>
+                    {% endif %}
                 </tr>
             {% else %}
             <tr>
@@ -99,9 +123,11 @@
                 <td id="totalQuantity" class="col-3 text-center">
                     {{ totalQuantity }}
                 </td>
-                <td id="totalPriceHt" class="col-4 text-center">
-                    {{ totalPrice }} €
-                </td>
+                {% if user.isProfessional %}
+                    <td id="totalPriceHt" class="col-4 text-center">
+                        {{ totalPrice }} €
+                    </td>
+                {% endif %}
                 <td id="totalPriceTtc" class="col-5 text-center">
                     {{ totalPriceTtc }} €
                 </td>
