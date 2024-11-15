@@ -464,3 +464,148 @@ hr .new1 {
 .alert-info { background-color: #d1ecf1; }
 
 .alert-warning { background-color: #fff3cd; }
+
+
+/*
+===========================================MODE_DE_PAIEMENT=============================================================
+ */
+
+.carte {
+    width: 350px;
+    height: 220px;
+    border-radius: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.8), rgba(0, 198, 255, 0.8)), url('../img/payment/background_cardship.jpg');
+    background-size: cover, 400px;
+    background-repeat: no-repeat;
+    background-position: center, right bottom;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.carte .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    letter-spacing: 1px;
+}
+
+.carte .puce {
+    width: 60px;
+    height: 40px;
+    background: gold;
+    border: 2px solid black;
+    border-radius: 5px;
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carte .puce::before, .carte .puce::after {
+    content: "";
+    display: block;
+    width: 80%;
+    height: 6px;
+    background: black;
+    margin: 2px 0;
+}
+
+.carte .numero {
+    font-size: 1.2em;
+    letter-spacing: 3px;
+    margin-top: 100px;
+}
+
+.carte .details {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 35px;
+    width: 100%;
+    right: 0;
+    padding: 0 20px;
+    font-size: 0.8em;
+}
+
+.carte .details .titulaire,
+.carte .details .expiration {
+    text-transform: uppercase;
+}
+
+.carte .reseau {
+    position: absolute;
+    bottom: 35px;
+    right: 75px;
+    display: flex;
+    align-items: center;
+}
+
+.carte .reseau .circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.carte .reseau .circle.orange {
+    background-color: #FF5F00;
+    right: -40px;
+    bottom: -30px;
+}
+
+.carte .reseau .circle.red {
+    background-color: #EB001B;
+    left: 30px;
+    bottom: -30px;
+}
+
+.carte .reseau .text {
+    font-size: 0.8em;
+    font-weight: bold;
+    position: absolute;
+    right: -70px;
+    top: 12px;
+}
+
+.payment-options .payment-option {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.payment-options .payment-option:nth-child(odd) {
+    background-color: #f8f9fa; /* Couleur grise claire */
+}
+
+.payment-options .payment-option:nth-child(even) {
+    background-color: #ffffff; /* Couleur blanche */
+}
+
+.payment-options .payment-option:hover {
+    background-color: #e2e6ea; /* Couleur au survol */
+}
+
+.order-summary {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.order-summary th, .order-summary td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.order-summary thead {
+    background-color: #f8f9fa;
+}
+
+.total {
+    text-align: right;
+}

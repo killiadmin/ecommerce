@@ -57,10 +57,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $professional = null;
 
+    /**
+     * @var Collection<int, Payment>
+     */
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'user_payment', orphanRemoval: true)]
+    private Collection $payments;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
         $this->userAddresses = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -242,6 +249,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfessional(bool $professional): static
     {
         $this->professional = $professional;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): static
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setUserPayment($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(Payment $payment): static
+    {
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getUserPayment() === $this) {
+                $payment->setUserPayment(null);
+            }
+        }
 
         return $this;
     }
