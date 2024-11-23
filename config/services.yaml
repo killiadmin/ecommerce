@@ -25,9 +25,20 @@ services:
             '@security.helper'
         ]
 
-    App\Service\CardMaskingService:
-        autowire: true
-        autoconfigure: true
+    App\Repository\PaymentRepository:
+        arguments:
+            $registry: '@doctrine'
+
+    App\Service\PaymentService:
+        arguments:
+            $formFactory: '@form.factory'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $basketService: '@App\Service\BasketService'
+            $security: '@security.helper'
+
+    # App\Service\CardMaskingService:
+    #    autowire: true
+    #    autoconfigure: true
 
     App\Entity\Basket: ~
 

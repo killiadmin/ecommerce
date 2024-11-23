@@ -15,13 +15,15 @@
                         {% if listPayments|length > 0 %}
                             {% for payment in listPayments %}
                                 <div class="payment-option{% if payment.isSelectPayment() %} border-select{% endif %}">
-                                    <strong>
-                                        {{ payment.getLastnamePayment() }}&nbsp;{{ payment.getFirstnamePayment() }}
-                                    </strong>
-                                    &nbsp;{{ payment.getMaskedNumberPayment() }}&nbsp;
-                                    <strong>
-                                        Expire le :
-                                    </strong> {{ payment.getExpirationDatePayment() }}
+                                    <a class="text-decoration-none text-black" href="{{ path("app_select_payment", {'id' : payment.getId() }) }}">
+                                        <strong>
+                                            {{ payment.getLastnamePayment() }}&nbsp;{{ payment.getFirstnamePayment() }}
+                                        </strong>
+                                        &nbsp;{{ payment.getMaskedNumberPayment() }}&nbsp;
+                                        <strong>
+                                            Expire le :
+                                        </strong> {{ payment.getExpirationDatePayment() }}
+                                    </a>
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -65,6 +67,10 @@
                                 <div class="circle red"></div>
                                 <div class="text">Mastercard</div>
                             </div>
+                        </div>
+                    {% else %}
+                        <div class="border text-warning p-2 w-50 mx-auto">
+                            Aucun moyen de paiement sélectionné
                         </div>
                     {% endif %}
                 </div>
