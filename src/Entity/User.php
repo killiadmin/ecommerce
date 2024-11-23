@@ -63,11 +63,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'user_payment', orphanRemoval: true)]
     private Collection $payments;
 
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user_order')]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
         $this->userAddresses = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -292,5 +299,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return null;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setUserOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getUserOrder() === $this) {
+                $order->setUserOrder(null);
+            }
+        }
+
+        return $this;
     }
 }

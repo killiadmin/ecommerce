@@ -61,9 +61,16 @@ class  Product
     #[ORM\Column(nullable: true)]
     private ?int $stock = null;
 
+    /**
+     * @var Collection<int, OrderDetails>
+     */
+    #[ORM\OneToMany(targetEntity: OrderDetails::class, mappedBy: 'product_associated')]
+    private Collection $created_at;
+
     public function __construct()
     {
         $this->basketItems = new ArrayCollection();
+        $this->created_at = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -241,5 +248,27 @@ class  Product
         $priceWithVat = $priceNumeric * 1.20;
 
         return round($priceWithVat, 2);
+    }
+
+    public function addCreatedAt(OrderDetails $createdAt): static
+    {
+        if (!$this->created_at->contains($createdAt)) {
+            $this->created_at->add($createdAt);
+            $createdAt->setProductAssociated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedAt(OrderDetails $createdAt): static
+    {
+        if ($this->created_at->removeElement($createdAt)) {
+            // set the owning side to null (unless already changed)
+            if ($createdAt->getProductAssociated() === $this) {
+                $createdAt->setProductAssociated(null);
+            }
+        }
+
+        return $this;
     }
 }
