@@ -11,6 +11,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DeliveryController extends AbstractController
 {
@@ -21,7 +22,8 @@ class DeliveryController extends AbstractController
      * @param Security $security
      * @return Response
      */
-    #[Route('/addresse-livraison', name: 'app_delivery')]
+    #[Route('/livraison', name: 'app_delivery')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function managementDelivery(
         UserAddressRepository $userAddressRepository,
         Security              $security

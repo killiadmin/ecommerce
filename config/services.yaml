@@ -20,7 +20,16 @@ services:
             $em: '@doctrine.orm.entity_manager'
 
     App\Service\ProfilService:
-        arguments: [ '@doctrine.orm.entity_manager', '@security.helper' ]
+        arguments: [
+            '@doctrine.orm.entity_manager',
+            '@security.helper'
+        ]
+
+    App\Service\CardMaskingService:
+        autowire: true
+        autoconfigure: true
+
+    App\Entity\Basket: ~
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

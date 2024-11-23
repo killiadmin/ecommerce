@@ -33,6 +33,7 @@ class AppFixtures extends Fixture
         $userAdmin->setRoles(['ROLE_ADMIN']);
         $userAdmin->setAgree(1);
         $userAdmin->setAvatar('avatar_001.png');
+        $userAdmin->setProfessional(true);
         $userAdmin->setCreatedAt(new \DateTimeImmutable());
 
         $manager->persist($userAdmin);
@@ -48,6 +49,7 @@ class AppFixtures extends Fixture
             $user->setRoles(['ROLE_USER']);
             $user->setAgree(1);
             $user->setAvatar('avatar_OO1.png');
+            $user->setProfessional(false);
             $user->setCreatedAt(new \DateTimeImmutable());
 
             $manager->persist($user);

@@ -43,7 +43,7 @@
                                     <h5 class="card-title text-truncate" title="{{ product.title }}">{{ product.title }}</h5>
                                 </div>
                                 <div>
-                                    {% if user.professional %}
+                                    {% if app.user and user.professional %}
                                         <span class="color-custom3" title="Prix HT"> {{ product.price }}€ - </span>
                                     {% endif %}
                                     <span class="fw-bold" title="Prix TTC"> {{ product.priceTva }}€</span>
@@ -51,7 +51,7 @@
                             </div>
                             <p class="card-text">{{ product.description }}</p>
                         </div>
-                        <div class="d-flex flex-row-reverse card-body quantity-selector" style="font-size: 25px;">
+                        <div class="d-flex flex-row-reverse card-body quantity-selector align-items-center" style="font-size: 25px;">
                             <a href="{{ path('product_detail', {'id' : product.id }) }}"
                                class="btn btn-secondary text-white ms-4 btn-sm btn-block my-2 fs-4"
                                title="Voir le produit en détail">
