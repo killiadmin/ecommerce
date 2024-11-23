@@ -16,28 +16,21 @@ class PaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, Payment::class);
     }
 
-    //    /**
-    //     * @return Payment[] Returns an array of Payment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Payment
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Deselects all payment methods for a given user
+     *
+     * @param mixed $user
+     * @return mixed
+     */
+    public function deselectAllPaymentsForUser(mixed $user): mixed
+    {
+        return $this->createQueryBuilder('p')
+            ->update()
+            ->set('p.select_payment', ':false')
+            ->where('p.user_payment = :user')
+            ->setParameter('false', false)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+    }
 }
