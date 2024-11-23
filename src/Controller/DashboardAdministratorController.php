@@ -8,10 +8,12 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardAdministratorController extends AbstractController
 {
     #[Route('/dashboard/administrator', name: 'app_dashboard_administrator')]
+    #[IsGranted('ROLE_ADMIN')]
     public function viewDashboard(
         ProductRepository      $productRepository,
         UserRepository         $userRepository,

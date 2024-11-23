@@ -296,7 +296,7 @@ hr .new1 {
     text-decoration: none;
     font-size: 25px;
     color: #818181;
-    display: block;
+    display: none;
     transition: 0.3s;
 }
 
@@ -325,7 +325,19 @@ hr .new1 {
     transform: rotate(-90deg);
     transform-origin: left top;
     transition: left 0.5s;
-    height: 70px;
+    height: 60px;
+}
+
+@media (min-width: 992px) {
+    .openbtn {
+        top: 1150px;
+    }
+}
+
+@media (max-width: 991px) {
+    .openbtn {
+        top: 700px;
+    }
 }
 
 .arrow-icon {
@@ -581,15 +593,19 @@ hr .new1 {
 }
 
 .payment-options .payment-option:nth-child(odd) {
-    background-color: #f8f9fa; /* Couleur grise claire */
+    background-color: #f8f9fa;
 }
 
 .payment-options .payment-option:nth-child(even) {
-    background-color: #ffffff; /* Couleur blanche */
+    background-color: #ffffff;
 }
 
 .payment-options .payment-option:hover {
-    background-color: #e2e6ea; /* Couleur au survol */
+    background-color: #e2e6ea;
+}
+
+.border-select{
+    border: 2px solid #faa916 !important;
 }
 
 .order-summary {

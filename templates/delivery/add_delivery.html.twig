@@ -1,54 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une Adresse de Livraison{% endblock %}
+{% block title %}Ajout d'une adresse de livraison{% endblock %}
 
 {% block body %}
-    <h1 class="text-center mb-2">Ajouter une Adresse de Livraison</h1>
+    <h1 class="text-center mb-2">Ajout d'une nouvelle adresse</h1>
     <div class="container">
         <div class="p-3 d-flex">
             <div class="border p-4 m-2 w-50 shadow">
-                <h2>Adresse de livraison</h2>
+                <h3>Adresse de livraison</h3>
                 {{ form_start(form) }}
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 w-100">
                         {{ form_row(form.number_delivery) }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 w-100">
                         {{ form_row(form.libelle_delivery) }}
                     </div>
                 </div>
-
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 w-100">
                         {{ form_row(form.code_delivery) }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 w-100">
                         {{ form_row(form.city_delivery) }}
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 w-100">
                         {{ form_row(form.billing) }}
                     </div>
                 </div>
             </div>
 
             <div class="border p-4 m-2 w-50 shadow billing-field">
-                <h2>Adresse de facturation</h2>
+                <h3>Adresse de facturation</h3>
                 <div class="form-row billing-field">
-                    <div class="col-md-3">
+                    <div class="col-md-3 w-100">
                         {{ form_row(form.number_billing) }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 w-100">
                         {{ form_row(form.libelle_billing) }}
                     </div>
                 </div>
 
                 <div class="form-row billing-field">
-                    <div class="col-md-3">
+                    <div class="col-md-3 w-100">
                         {{ form_row(form.code_billing) }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 w-100">
                         {{ form_row(form.city_billing) }}
                     </div>
                 </div>

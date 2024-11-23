@@ -10,7 +10,7 @@
         <div class="container border">
             <div class="p-3 d-flex">
                 <div class="border p-4 m-2 w-50 shadow">
-                    <h2>Adresse de livraison</h2>
+                    <h3>Adresse de livraison</h3>
                     {% if address %}
                         <p><strong>Numéro : </strong> {{ address.numberDelivery ?: 'N/A' }}</p>
                         <p><strong>Rue : </strong> {{ address.libelleDelivery ?: 'N/A' }}</p>
@@ -21,7 +21,7 @@
                     {% endif %}
                 </div>
                 <div class="border p-4 m-2 w-50 shadow">
-                    <h2>Adresse de facturation</h2>
+                    <h3>Adresse de facturation</h3>
                     {% if address %}
                         <p><strong>Numéro : </strong> {{ address.numberBilling ?: 'N/A' }}</p>
                         <p><strong>Rue : </strong> {{ address.libelleBilling ?: 'N/A' }}</p>

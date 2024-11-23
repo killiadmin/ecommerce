@@ -282,4 +282,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPaymentSelected(): ?Payment
+    {
+        foreach ($this->payments as $payment) {
+            if ($payment->isSelectPayment()) {
+                return $payment;
+            }
+        }
+
+        return null;
+    }
 }

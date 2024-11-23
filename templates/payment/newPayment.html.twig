@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout paiement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2 class="text-center mb-4">Ajouter un nouveau paiement</h2>
+
+                {{ form_start(paymentForm, {'attr': {'class': 'form-contact'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(paymentForm.firstname_payment) }}
+                    {{ form_widget(paymentForm.firstname_payment) }}
+                    {{ form_errors(paymentForm.firstname_payment) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(paymentForm.lastname_payment) }}
+                    {{ form_widget(paymentForm.lastname_payment) }}
+                    {{ form_errors(paymentForm.lastname_payment) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(paymentForm.number_payment) }}
+                    {{ form_widget(paymentForm.number_payment) }}
+                    {{ form_errors(paymentForm.number_payment) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(paymentForm.expiration_date_payment) }}
+                    {{ form_widget(paymentForm.expiration_date_payment) }}
+                    {{ form_errors(paymentForm.expiration_date_payment) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(paymentForm.select_payment) }}
+                    {{ form_widget(paymentForm.select_payment) }}
+                    {{ form_errors(paymentForm.select_payment) }}
+                </div>
+
+                <div class="d-flex flex-row-reverse gap-2">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a class="btn btn-secondary" href="{{ path('app_payment') }}">Annuler</a>
+                </div>
+
+                {{ form_end(paymentForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -36,6 +36,20 @@ class Payment
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $firstname_payment = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lastname_payment = null;
+
+    #[ORM\Column]
+    private ?bool $select_payment = null;
+
+    public function __construct()
+    {
+        $this->type_payment = 'cb';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +93,8 @@ class Payment
 
     public function getTypePayment(): ?string
     {
+        $this->type_payment === 'CB';
+
         return $this->type_payment;
     }
 
@@ -121,6 +137,42 @@ class Payment
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getFirstnamePayment(): ?string
+    {
+        return $this->firstname_payment;
+    }
+
+    public function setFirstnamePayment(string $firstname_payment): static
+    {
+        $this->firstname_payment = $firstname_payment;
+
+        return $this;
+    }
+
+    public function getLastnamePayment(): ?string
+    {
+        return $this->lastname_payment;
+    }
+
+    public function setLastnamePayment(string $lastname_payment): static
+    {
+        $this->lastname_payment = $lastname_payment;
+
+        return $this;
+    }
+
+    public function isSelectPayment(): ?bool
+    {
+        return $this->select_payment;
+    }
+
+    public function setSelectPayment(bool $select_payment): static
+    {
+        $this->select_payment = $select_payment;
 
         return $this;
     }
