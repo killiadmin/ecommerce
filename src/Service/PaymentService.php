@@ -81,7 +81,10 @@ class PaymentService
             $selectPayment = $paymentForm->get('select_payment')->getData();
 
             $maskedNumberPayment = $this->maskCardNumber($numberPayment);
+            $hashedNumberPayment = $this->hashCardNumber($numberPayment);
+
             $newPayment->setMaskedNumberPayment($maskedNumberPayment);
+            $newPayment->setNumberPayment($hashedNumberPayment);
 
             $newPayment->setActivePayment(1);
             $newPayment->setSelectPayment($selectPayment ?? false);
@@ -137,9 +140,18 @@ class PaymentService
      * @param string $cardNumber
      * @return string
      */
-    public function maskCardNumber(string $cardNumber): string
+    private function maskCardNumber(string $cardNumber): string
     {
         $masked = str_repeat('*', strlen($cardNumber) - 4) . substr($cardNumber, -4);
         return implode(' ', str_split($masked, 4));
+    }
+
+    /**
+     * @param string $cardNumber
+     * @return string
+     */
+    private function hashCardNumber(string $cardNumber): string
+    {
+        return hash('sha256', $cardNumber);
     }
 }
