@@ -253,6 +253,13 @@ class BasketController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $user->getBasket();
+        $basket = $user->getBasket();
+
+        if (!$basket) {
+            $basket = new Basket();
+            $basket->setUser($user);
+        }
+
+        return $basket;
     }
 }

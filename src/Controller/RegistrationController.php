@@ -23,6 +23,8 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setRoles(['ROLE_USER']);
+            $user->setProfessional(false);
+            $user->setAvatar('avatar_001.png');
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setAgree($form->get('agreeTerms')->getData());
 
