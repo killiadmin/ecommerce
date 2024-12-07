@@ -1,22 +1,37 @@
-<div class="container">
-    <div class="d-flex justify-content-between">
-        <a class="btn btn-secondary text-white shadow me-2 fs-5"
-           href="{{ app.session.get('last_page') is not empty ? app.session.get('last_page') : path('app_product') }}">
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a class="btn btn-secondary text-white shadow fs-5" href="{{ app.session.get('last_page') is not empty ? app.session.get('last_page') : path('app_product') }}">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <a class="btn btn-secondary text-white shadow me-2 fs-5" href="#" title="Ajouter un panier">
-            <i class="fa-solid fa-cart-plus"></i>
+        <a class="btn btn-primary text-white shadow fs-5" href="#" title="Ajouter au panier">
+            <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
         </a>
     </div>
-    <div class="container border shadow mt-4">
-        <div class="text-center my-5">
+    <div class="product-card border rounded shadow p-4">
+        <div class="product-title text-center mb-4">
             <h1>{{ product.title }}</h1>
         </div>
-        <div class="text-start">
-            <p>{{ product.description }}</p>
-        </div>
-        <div class="d-flex flex-row-reverse p-3" style="color: grey">
-            Créer le {{ product.createdAt | date('d / m / Y') }}
+        <div class="d-flex">
+            <div class="product-description text-start mb-4 w-50 border p-3" style="max-height: 500px; overflow-y: auto">
+                <p>{{ product.description | nl2br | raw  }}</p>
+            </div>
+            <div class="product-footer d-flex flex-column w-50 border p-3" style="color: grey; max-height: 500px; overflow-y: auto">
+                <div class="product-image text-center mb-4">
+                    {% set picturePath = vich_uploader_asset(product, 'pictureFile') %}
+                    {% set displayImage = product.picture %}
+                    {% if displayImage is empty %}
+                        {% set displayImage = 'img/no_picture.jpg' %}
+                    {% endif %}
+                    {% if displayImage == 'img/no_picture.jpg' or picturePath is empty %}
+                        <img src="{{ asset(displayImage) }}" class="img-fluid" alt="{{ product.title }}">
+                    {% else %}
+                        <img src="{{ picturePath | imagine_filter('thumb_294x294') }}" alt="{{ product.title }}" class="img-fluid">
+                    {% endif %}
+                </div>
+                <span class="mb-3">Prix : <strong>{{ product.price }} €</strong></span>
+                <span class="mb-3">Marque : <strong>{{ product.brand }}</strong></span>
+                <span class="mb-3">Ajouter le : <strong>{{ product.createdAt | date('d / m / Y') }}</strong></span>
+            </div>
         </div>
     </div>
 </div>

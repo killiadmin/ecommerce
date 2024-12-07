@@ -29,6 +29,16 @@ class AddProductType extends AbstractType
                     'class' => 'form-control mb-5'
                 ]
             ])
+            ->add('brand',TextType::class, [
+                'required' => true,
+                'label' => 'Marque',
+                'label_attr' => [
+                    'class' => 'fw-bold'
+                ],
+                'attr' => [
+                    'class' => 'form-control mb-5'
+                ]
+            ])
             ->add('description', TextareaType::class, [
                 'required' => true,
                 'label' => 'Description',
