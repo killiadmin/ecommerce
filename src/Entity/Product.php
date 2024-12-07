@@ -67,6 +67,9 @@ class  Product
     #[ORM\OneToMany(targetEntity: OrderDetails::class, mappedBy: 'product_associated')]
     private Collection $created_at;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $brand = null;
+
     public function __construct()
     {
         $this->basketItems = new ArrayCollection();
@@ -268,6 +271,18 @@ class  Product
                 $createdAt->setProductAssociated(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?string $brand): static
+    {
+        $this->brand = $brand;
 
         return $this;
     }

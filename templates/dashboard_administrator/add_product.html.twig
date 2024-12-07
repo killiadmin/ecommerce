@@ -7,58 +7,53 @@
         <div class="text-center mb-5">
             <h1>Ajouter un nouveau produit</h1>
         </div>
-
-        {# Ouverture du formulaire #}
         {{ form_start(AddProduct) }}
 
         <div>
-            {# Champ pour le titre du produit #}
             {{ form_label(AddProduct.title) }}
             {{ form_widget(AddProduct.title) }}
             {{ form_errors(AddProduct.title) }}
         </div>
 
         <div>
-            {# Champ pour la description du produit #}
+            {{ form_label(AddProduct.brand) }}
+            {{ form_widget(AddProduct.brand) }}
+            {{ form_errors(AddProduct.brand) }}
+        </div>
+
+        <div>
             {{ form_label(AddProduct.description) }}
             {{ form_widget(AddProduct.description) }}
             {{ form_errors(AddProduct.description) }}
         </div>
 
         <div>
-            {# Champ pour la catégorie du produit #}
             {{ form_label(AddProduct.category) }}
             {{ form_widget(AddProduct.category) }}
             {{ form_errors(AddProduct.category) }}
         </div>
 
          <div>
-             {#Champ pour l'image du produit#}
             {{ form_label(AddProduct.pictureFile) }}
             {{ form_widget(AddProduct.pictureFile) }}
             {{ form_errors(AddProduct.pictureFile) }}
         </div>
 
         <div>
-            {# Champ pour le prix du produit #}
             {{ form_label(AddProduct.price) }}
             {{ form_widget(AddProduct.price) }}
             {{ form_errors(AddProduct.price) }}
         </div>
 
         <div>
-            {# Champ pour l'activation (actif/inactif) #}
             {{ form_label(AddProduct.active) }}
             {{ form_widget(AddProduct.active) }}
             {{ form_errors(AddProduct.active) }}
         </div>
 
         <div>
-            {# Bouton de soumission du formulaire #}
             <button type="submit" class="btn btn-primary">Ajouter le produit</button>
         </div>
-
-        {# Fermeture du formulaire #}
         {{ form_end(AddProduct) }}
     </div>
 {% endblock %}
