@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@stripe/stripe-js": "^5.2.0",
     "feather-icons": "^4.29.2"
   }
 }
