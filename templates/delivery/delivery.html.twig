@@ -49,7 +49,10 @@
         </div>
 
         <div class="d-flex gap-3 mt-3 flex-row-reverse ms-auto w-75">
-            <a class="btn btn-info shadow" href="{{ path('app_payment') }}" role="button">
+            <a class="btn btn-primary shadow" href="{{ path('app_payment_stripe') }}" role="button">
+                Paiement avec Stripe
+            </a>
+            <a class="btn btn-info shadow" href="{{ path('app_payment_custom') }}" role="button">
                 Passer au paiement
             </a>
             <a class="btn btn-secondary shadow" href="{{ path('app_basket') }}" role="button">

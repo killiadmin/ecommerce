@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Repository\UserAddressRepository;
 use App\Service\PaymentService;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,9 +21,9 @@ class PaymentController extends AbstractController
      * @param PaymentService $paymentService
      * @return Response
      */
-    #[Route('/paiement', name: 'app_payment')]
+    #[Route('/paiement', name: 'app_payment_custom')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function displayPayment(Request $request, PaymentService $paymentService): Response
+    public function displayCustomPayment(Request $request, PaymentService $paymentService): Response
     {
         $paymentData = $paymentService->getPaymentData($request);
 
@@ -26,9 +31,30 @@ class PaymentController extends AbstractController
             return $this->json($paymentData['dataBasket']);
         }
 
-        return $this->render('payment/payment.html.twig', [
+        return $this->render('payment/custom/payment.html.twig', [
             'listPayments' => $paymentData['listPayments'],
             'paymentSelected' => $paymentData['paymentSelected'],
+            'dataBasket' => $paymentData['dataBasket'],
+            'basketItems' => $paymentData['basketItems']
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param PaymentService $paymentService
+     * @return Response
+     */
+    #[Route('/paiement-stripe', name: 'app_payment_stripe')]
+    public function displayStripePayment(Request $request, PaymentService $paymentService): Response
+    {
+        $paymentData = $paymentService->getPaymentData($request);
+
+        if ($paymentData['httpRequest']) {
+            return $this->json($paymentData['dataBasket']);
+        }
+
+        return $this->render('payment/stripe/payment-stripe.html.twig', [
+            'stripe_public_key' => $_ENV['STRIPE_PUBLIC_KEY'],
             'dataBasket' => $paymentData['dataBasket'],
             'basketItems' => $paymentData['basketItems']
         ]);
@@ -45,10 +71,10 @@ class PaymentController extends AbstractController
         $result = $paymentService->handlePaymentAddition($request);
 
         if ($result === true) {
-            return $this->redirectToRoute('app_payment');
+            return $this->redirectToRoute('app_payment_custom');
         }
 
-        return $this->render('payment/newPayment.html.twig', [
+        return $this->render('payment/custom/newPayment.html.twig', [
             'paymentForm' => $result->createView(),
         ]);
     }
@@ -67,6 +93,68 @@ class PaymentController extends AbstractController
             throw $this->createNotFoundException($e->getMessage());
         }
 
-        return $this->redirectToRoute('app_payment');
+        return $this->redirectToRoute('app_payment_custom');
+    }
+
+    #[Route('/payment/infos', name: 'app_payment_infos', methods: ['GET'])]
+    public function getInfosPayment(
+        UserAddressRepository $userAddressRepository,
+        Security              $security
+    ): JsonResponse
+    {
+        $user = $security->getUser();
+        $email = null;
+        $phone = null;
+        $addressArray = null;
+
+        if ($user) {
+            $email = $user->getEmail();
+            $phone = "+33 629087261";
+        }
+
+        $address = $userAddressRepository->findOneBy(['user_associated' => $user]);
+
+        if ($address) {
+            $addressArray = [
+                'line1' => $address->getNumberBilling() . ' ' . $address->getLibelleBilling(),
+                'city' => $address->getCityBilling(),
+                'state' => $address->getCityBilling(),
+                'postal_code' => $address->getCodeBilling(),
+            ];
+        }
+
+        return new JsonResponse([
+            'email' => $email,
+            'phone' => $phone,
+            'address' => $addressArray,
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    #[Route('/create-payment-intent', name: 'create_payment_intent', methods: ['POST'])]
+    public function createPaymentIntent(): JsonResponse
+    {
+        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+
+        try {
+            $paymentIntent = PaymentIntent::create([
+                'amount' => 6000,
+                'currency' => 'eur',
+                'payment_method_types' => ['card'],
+                'description' => 'Description de l\'achat (optionnel)',
+                'metadata' => [
+                    'code_order' => '12345',
+                    'cardholder_name' => 'Anonyme',
+                ],
+            ]);
+
+            return new JsonResponse([
+                'clientSecret' => $paymentIntent->client_secret,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        }
     }
 }
