@@ -3,15 +3,15 @@ $(document).ready(async () => {
     const elements = stripe.elements();
     const cardElement = elements.create("card");
     cardElement.mount("#card-element");
+    const montantTotalTtc = parseFloat($("#montantTotalPriceTtc").text().replace(",", "."));
+    const nbTotalArticles = $("#nbTotalArticles").val();
 
-    const test = await $.ajax({
+    const userDatas = await $.ajax({
         url: "/payment/infos",
         method: "GET",
         contentType: "application/json",
         dataType: "json"
     });
-    console.log(test);
-
 
     $("#payment-form").on("submit", async (event) => {
         event.preventDefault();
@@ -23,27 +23,31 @@ $(document).ready(async () => {
             url: "/create-payment-intent",
             method: "POST",
             contentType: "application/json",
-            dataType: "json"
+            dataType: "json",
+            data: JSON.stringify({
+                amount: Math.round(montantTotalTtc * 100),
+                description: nbTotalArticles + " articles vendus",
+            })
         });
 
-        if (backendError) {
-            $("#card-errors").text(backendError);
+        if (backendError || !clientSecret) {
+            $("#card-errors").text(backendError || "Erreur lors de la création du PaymentIntent");
             return;
         }
 
-        const {error: stripeError} = await stripe.confirmCardPayment(clientSecret, {
+        const { error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: cardElement,
                 billing_details: {
                     name: cardholderName,
-                    email: "jean.dupont@example.com",
-                    phone: "+33123456789",
+                    email: userDatas.email,
+                    phone: userDatas.phone,
                     address: {
-                        line1: "123 Rue de Paradis",
-                        line2: "Appartement 4B",
-                        city: "Paris",
-                        state: "Île-de-France",
-                        postal_code: "75010",
+                        line1: userDatas.address.line1,
+                        line2: "",
+                        city: userDatas.address.city,
+                        state: "",
+                        postal_code: userDatas.address.postal_code,
                         country: cardCountry
                     }
                 }

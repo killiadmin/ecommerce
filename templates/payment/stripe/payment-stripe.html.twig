@@ -9,6 +9,7 @@
     <div class="container">
         <div class="row h-100 mx-auto">
             <div class="w-100">
+                {% set nbTotalArticles = 0 %}
                 <div class="border mb-3 p-3 text-center">
                     <h5 class="text-center">Terminal stripe (Mode test)</h5>
                     <div id="payment-section" class="my-5 w-50 mx-auto">
@@ -50,21 +51,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                         {% for item in basketItems %}
-                        {% set product = item.product %}
-                        <tr>
-                            <td>{{ product.title }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ product.price }}</td>
-                            <td>{{ item.quantity * product.price }}</td>
-                        </tr>
-                    {% endfor %}
+                             {% for item in basketItems %}
+                                {% set product = item.product %}
+                                    <tr>
+                                        <td>{{ product.title }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ product.price }}</td>
+                                        <td>{{ item.quantity * product.price }}</td>
+                                    </tr>
+                                 {% set nbTotalArticles = nbTotalArticles + item.quantity %}
+                             {% endfor %}
                         </tbody>
                     </table>
                     <div class="total mt-3">
-                        <strong>Total :  {{ dataBasket.totalPriceTtc }}  €</strong>
+                        <strong>Total : <span id="montantTotalPriceTtc">{{ dataBasket.totalPriceTtc }}</span> €</strong>
                     </div>
                 </div>
+                <input type="hidden" id="nbTotalArticles" value="{{ nbTotalArticles }}" />
             </div>
         </div>
         <div class="d-flex gap-3 mt-3 flex-row-reverse ms-auto w-75">

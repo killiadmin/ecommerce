@@ -8,6 +8,7 @@ use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +57,7 @@ class PaymentController extends AbstractController
         return $this->render('payment/stripe/payment-stripe.html.twig', [
             'stripe_public_key' => $_ENV['STRIPE_PUBLIC_KEY'],
             'dataBasket' => $paymentData['dataBasket'],
-            'basketItems' => $paymentData['basketItems']
+            'basketItems' => $paymentData['basketItems'],
         ]);
     }
 
@@ -118,7 +119,6 @@ class PaymentController extends AbstractController
             $addressArray = [
                 'line1' => $address->getNumberBilling() . ' ' . $address->getLibelleBilling(),
                 'city' => $address->getCityBilling(),
-                'state' => $address->getCityBilling(),
                 'postal_code' => $address->getCodeBilling(),
             ];
         }
@@ -131,19 +131,26 @@ class PaymentController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
+     * @throws JsonException|\JsonException
      */
     #[Route('/create-payment-intent', name: 'create_payment_intent', methods: ['POST'])]
-    public function createPaymentIntent(): JsonResponse
+    public function createPaymentIntent(Request $request): JsonResponse
     {
         Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
+        $datas = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        $amount = $datas['amount'] ?? 9999;
+        $description = $datas['description'] ?? 'Opération de test';
+
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => 6000,
+                'amount' => $amount,
                 'currency' => 'eur',
                 'payment_method_types' => ['card'],
-                'description' => 'Description de l\'achat (optionnel)',
+                'description' => $description,
                 'metadata' => [
                     'code_order' => '12345',
                     'cardholder_name' => 'Anonyme',
