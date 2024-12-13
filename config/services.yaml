@@ -11,6 +11,12 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    App\EventListener\AuthListener:
+        arguments:
+            $security: '@security.helper'
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
     App\EventListener\ImageResizeListener:
         tags:
             - { name: 'kernel.event_listener', event: 'vich_uploader.post_upload' }
