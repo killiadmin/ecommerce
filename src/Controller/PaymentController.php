@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
 use App\Repository\UserAddressRepository;
 use App\Service\PaymentService;
+use Doctrine\ORM\EntityManagerInterface;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -131,20 +133,44 @@ class PaymentController extends AbstractController
     }
 
     /**
+     * Handles the creation of a payment intent using Stripe API and saves the associated order in the database.
+     *
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @return JsonResponse
-     * @throws JsonException|\JsonException
+     * @throws \JsonException
      */
     #[Route('/create-payment-intent', name: 'create_payment_intent', methods: ['POST'])]
-    public function createPaymentIntent(Request $request): JsonResponse
+    public function createPaymentIntent(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
         $datas = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $amount = $datas['amount'] ?? 9999;
-        $description = $datas['description'] ?? 'Opération de test';
+        $quantity = $datas['quantity'] ?? 999;
+        $description = $quantity . ' articles vendus' ?? 'Aucun description disponible';
 
+        $user = $this->getUser();
+
+        // New order
+        try {
+            $order = new Order();
+            $order->setUserOrder($user);
+            $order->setCodeOrder(uniqid('ORDER_', true));
+            $order->setTotalPriceOrder($amount / 100);
+            $order->setTotalQuantityOrder($quantity);
+            $order->setPaymentOrder('stripe');
+            $order->setValidateOrder(false);
+            $order->setCreatedAt(new \DateTimeImmutable());
+
+            $entityManager->persist($order);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Erreur lors de la création de la commande : ' . $e->getMessage()], 500);
+        }
+
+        // Payment operation
         try {
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amount,
@@ -152,9 +178,10 @@ class PaymentController extends AbstractController
                 'payment_method_types' => ['card'],
                 'description' => $description,
                 'metadata' => [
-                    'code_order' => '12345',
-                    'cardholder_name' => 'Anonyme',
+                    'code_order' => $order->getCodeOrder(),
+                    'description' => $description,
                 ],
+                'capture_method' => 'automatic',
             ]);
 
             return new JsonResponse([

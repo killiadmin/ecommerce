@@ -17,8 +17,8 @@ $(document).ready(async () => {
             cardholderName,
             cardCountry,
             amount: Math.round(montantTotalTtc * 100),
-            description: `${nbTotalArticles} articles vendus`,
-            userDatas
+            quantity: nbTotalArticles,
+            userDatas,
         });
     });
 });
@@ -41,16 +41,16 @@ function initStripeElements(stripe) {
 /**
  * Handles the payment process by integrating with Stripe API and back-end payment intent.
  *
- * @return {Promise<void>}
+ * @return {Promise<boolean>}
  */
-async function handlePayment(stripe, cardElement, { cardholderName, cardCountry, amount, description, userDatas }) {
+async function handlePayment(stripe, cardElement, { cardholderName, cardCountry, amount, quantity, userDatas }) {
     try {
         const { error: backendError, clientSecret } = await $.ajax({
             url: "/create-payment-intent",
             method: "POST",
             contentType: "application/json",
             dataType: "json",
-            data: JSON.stringify({ amount, description })
+            data: JSON.stringify({ amount, quantity })
         });
 
         if (backendError || !clientSecret) {
@@ -80,7 +80,7 @@ async function handlePayment(stripe, cardElement, { cardholderName, cardCountry,
         if (stripeError) {
             $("#card-errors").text(stripeError.message);
         } else {
-            alert("Paiement réussi!");
+            return true;
         }
     } catch (err) {
         $("#card-errors").text("Erreur inattendue : " + err.message);

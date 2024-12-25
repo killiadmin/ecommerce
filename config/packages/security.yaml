@@ -47,8 +47,8 @@ security:
     access_control:
         - { path: ^/dashboard/administrator, roles: [IS_AUTHENTICATED_FULLY, ROLE_ADMIN] }
         - { path: ^/profil, roles: [ROLE_ADMIN, ROLE_USER] }
-        - { path: ^/livraison, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/paiement, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/livraison, roles: [ROLE_ADMIN, ROLE_USER] }
+        - { path: ^/paiement, roles: [ROLE_ADMIN, ROLE_USER] }
 
 when@test:
     security:
