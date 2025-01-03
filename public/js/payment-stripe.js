@@ -16,8 +16,6 @@ $(document).ready(async () => {
         await handlePayment(stripe, cardElement, {
             cardholderName,
             cardCountry,
-            amount: Math.round(montantTotalTtc * 100),
-            quantity: nbTotalArticles,
             userDatas,
         });
     });
@@ -43,14 +41,13 @@ function initStripeElements(stripe) {
  *
  * @return {Promise<boolean>}
  */
-async function handlePayment(stripe, cardElement, { cardholderName, cardCountry, amount, quantity, userDatas }) {
+async function handlePayment(stripe, cardElement, { cardholderName, cardCountry, userDatas }) {
     try {
         const { error: backendError, clientSecret } = await $.ajax({
             url: "/create-payment-intent",
             method: "POST",
             contentType: "application/json",
             dataType: "json",
-            data: JSON.stringify({ amount, quantity })
         });
 
         if (backendError || !clientSecret) {

@@ -8,6 +8,7 @@ use App\Entity\BasketItem;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -33,7 +34,7 @@ class BasketService
      * @return array
      * @throws CircularReferenceException
      * @throws LogicException
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException|ExceptionInterface
      */
     public function getBasketData(Basket $basket, bool $httpRequest): array
     {
