@@ -14,6 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends AbstractController
 {
+    /**
+     * Setting up a webhook with the Stripe payment method for validation of the relevant purchase order
+     *
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/webhook/stripe', name: 'stripe_webhook', methods: ['POST'])]
     public function handleStripeWebhook(EntityManagerInterface $entityManager): Response
     {

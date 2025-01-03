@@ -3,22 +3,35 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\OrderDetails;
 use App\Repository\UserAddressRepository;
+use App\Service\BasketService;
 use App\Service\PaymentService;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 class PaymentController extends AbstractController
 {
+    private BasketService $basketService;
+    private UserService $userService;
+
+    public function __construct(BasketService $basketService, UserService $userService)
+    {
+        $this->basketService = $basketService;
+        $this->userService = $userService;
+    }
+
     /**
      * @param Request $request
      * @param PaymentService $paymentService
@@ -135,28 +148,44 @@ class PaymentController extends AbstractController
     /**
      * Handles the creation of a payment intent using Stripe API and saves the associated order in the database.
      *
-     * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @return JsonResponse
-     * @throws \JsonException
+     * @return RedirectResponse|JsonResponse
+     * @throws ExceptionInterface
      */
     #[Route('/create-payment-intent', name: 'create_payment_intent', methods: ['POST'])]
-    public function createPaymentIntent(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function createPaymentIntent(EntityManagerInterface $entityManager): RedirectResponse|JsonResponse
     {
         Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
-        $datas = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $basket = $this->userService->getUserBasket();
 
-        $amount = $datas['amount'] ?? 9999;
-        $quantity = $datas['quantity'] ?? 999;
-        $description = $quantity . ' articles vendus' ?? 'Aucun description disponible';
+        if ($basket instanceof RedirectResponse) {
+            return $basket;
+        }
 
-        $user = $this->getUser();
+        if ($basket->getItems()->isEmpty()) {
+            return new JsonResponse(['error' => 'Panier vide ou introuvable'], 400);
+        }
 
-        // New order
+        $basketData = $this->basketService->getBasketData($basket, false);
+
+        $amount = $basketData['totalPriceTtcWithDiscount'] !== $basketData['totalPriceTtc']
+            ? $basketData['totalPriceTtcWithDiscount'] * 100
+            : $basketData['totalPriceTtc'] * 100;
+
+        $quantity = $basketData['totalQuantity'];
+        $description = $quantity . ' articles vendus';
+
+        $getUser = $this->getUser();
+
+        if (!$getUser) {
+            return new JsonResponse(['error' => "Utilisateur non authentifié"], 401);
+        }
+
+        $order = new Order();
+
         try {
-            $order = new Order();
-            $order->setUserOrder($user);
+            $order->setUserOrder($getUser);
             $order->setCodeOrder(uniqid('ORDER_', true));
             $order->setTotalPriceOrder($amount / 100);
             $order->setTotalQuantityOrder($quantity);
@@ -165,12 +194,28 @@ class PaymentController extends AbstractController
             $order->setCreatedAt(new \DateTimeImmutable());
 
             $entityManager->persist($order);
+
+            foreach ($basket->getItems() as $basketItem) {
+                $product = $basketItem->getProduct();
+
+                if (!$product) {
+                    continue;
+                }
+
+                $orderDetail = new OrderDetails();
+                $orderDetail->setOrderAssociated($order);
+                $orderDetail->setProductAssociated($product);
+                $orderDetail->setCreatedAt(new \DateTimeImmutable());
+
+                $entityManager->persist($orderDetail);
+                $order->addOrderDetail($orderDetail);
+            }
+
             $entityManager->flush();
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Erreur lors de la création de la commande : ' . $e->getMessage()], 500);
         }
 
-        // Payment operation
         try {
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amount,
