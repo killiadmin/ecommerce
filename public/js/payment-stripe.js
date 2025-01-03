@@ -2,9 +2,6 @@ $(document).ready(async () => {
     const stripe = Stripe(stripePublicKey);
     const cardElement = initStripeElements(stripe);
 
-    const montantTotalTtc = parseFloat($("#montantTotalPriceTtc").text().replace(",", "."));
-    const nbTotalArticles = $("#nbTotalArticles").val();
-
     const userDatas = await fetchUserData();
 
     $("#payment-form").on("submit", async (event) => {
@@ -55,7 +52,7 @@ async function handlePayment(stripe, cardElement, { cardholderName, cardCountry,
             return;
         }
 
-        const { error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
+        const { paymentIntent, error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: cardElement,
                 billing_details: {
@@ -68,7 +65,7 @@ async function handlePayment(stripe, cardElement, { cardholderName, cardCountry,
                         city: userDatas.address?.city || "",
                         state: "",
                         postal_code: userDatas.address?.postal_code || "",
-                        country: cardCountry
+                        country: cardCountry,
                     }
                 }
             }
@@ -76,8 +73,14 @@ async function handlePayment(stripe, cardElement, { cardholderName, cardCountry,
 
         if (stripeError) {
             $("#card-errors").text(stripeError.message);
+            return;
+        }
+
+        if (paymentIntent && paymentIntent.status === "succeeded") {
+            window.location.href = "/order";
         } else {
-            return true;
+            console.info("Paiement en attente ou échoué :", paymentIntent);
+            $("#card-errors").text("Le paiement n'a pas pu être confirmé.");
         }
     } catch (err) {
         $("#card-errors").text("Erreur inattendue : " + err.message);
