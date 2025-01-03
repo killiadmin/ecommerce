@@ -62,4 +62,5 @@ class WebhookController extends AbstractController
 
         return new JsonResponse(['status' => 'success'], 200);
     }
+
 }
