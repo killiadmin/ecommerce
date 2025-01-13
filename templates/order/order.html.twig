@@ -5,20 +5,24 @@
 {% block body %}
     <div class="container mt-5">
         <h1 class="text-center mb-5">Récapitulatif de votre commande</h1>
-
-        <div class="order-summary border p-4 mb-4">
-            <h2 class="h4 mb-3">Numéro de commande : 000088889898</h2>
-            {#<h2 class="h4 mb-3">Numéro de commande : {{ order.id }}</h2>#}
-            <h3 class="h5">Client :</h3>
-            {#<p class="mb-2">{{ order.customerName }}</p>#}
-            <p class="mb-2">Filatre Killian</p>
-            {#<p class="mb-2">{{ order.customerEmail }}</p>#}
-            <p class="mb-2">killiadmin@ecommerce.com</p>
-            <p>4 rue de lecommerce</p>
+        <div class="order-summary border p-4 mb-4 shadow">
+            {% if lastOrder %}
+                <h2 class="h4 mb-3">Numéro de commande : {{ lastOrder.getCodeOrder() }}</h2>
+                <h3 class="h5">Client :</h3>
+                <p class="mb-2">{{ lastOrder.getUserOrder().getFirstname() }} {{ lastOrder.getUserOrder().getLastname() }}</p>
+                <p class="mb-2">{{ lastOrder.getUserOrder().getEmail() }}</p>
+                {% set addresses = lastOrder.getUserOrder().getUserAddresses() %}
+                {% if addresses|length > 0 %}
+                    {% for address in addresses %}
+                        <p class="mb-2">
+                            {{ address.getNumberDelivery() }} {{ address.getLibelleDelivery() }} {{ address.getCodeDelivery() }} {{ address.getCityDelivery() }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
         </div>
-
-        <div class="order-items border p-4 mb-4">
-            <h3 class="h5 mb-3">Détails de la commande :</h3>
+        <div class="order-items border p-4 mb-4 shadow">
+            <h3 class="h5">Produits :</h3>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -29,29 +33,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                {# {% for item in order.items %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.unitPrice | number_format(2, ',', ' ') }} €</td>
-                        <td>{{ (item.quantity * item.unitPrice) | number_format(2, ',', ' ') }} €</td>
-                    </tr>
-                {% endfor %} #}
-                <tr>
-                    <td>Enceinte</td>
-                    <td>4</td>
-                    <td>99 €</td>
-                    <td>199 €</td>
-                </tr>
+                {% if lastOrder %}
+                    {% for product in products %}
+                        <tr>
+                            <td>
+                                {{ product.getProductAssociated().getTitle() }}
+                            </td>
+                            <td>
+                                {{ product.getProductQuantity() }}
+                            </td>
+                            <td>
+                                {{ product.getProductAssociated().getPriceTva() }}
+                            </td>
+                            <td>
+                                {{ product.getProductAssociated().getPriceTva() * product.getProductQuantity() }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>
-
-        <div class="order-total border p-4 mb-4 text-right">
-            {#<h3 class="h5">Total de la commande : {{ order.total | number_format(2, ',', ' ') }} €</h3>#}
-            <h3 class="h5">Total de la commande : 999 €</h3>
+        <div class="order-total border p-4 mb-4 text-right shadow">
+            <h3 class="h5">
+                Total de la commande : {{ lastOrder.getTotalPriceOrder()| number_format(2, ',', ' ') }} € ({{ lastOrder.getTotalQuantityOrder() }} articles)
+            </h3>
         </div>
-
         <div class="order-actions text-center">
             <a href="#" class="btn btn-primary mt-3">Voir l'historique des commandes</a>
         </div>

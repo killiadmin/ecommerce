@@ -2,15 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Order;
-use App\Entity\OrderDetails;
 use App\Repository\UserAddressRepository;
-use App\Service\BasketService;
 use App\Service\PaymentService;
-use App\Service\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use Stripe\PaymentIntent;
-use Stripe\Stripe;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,19 +17,11 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 class PaymentController extends AbstractController
 {
-    private BasketService $basketService;
-    private UserService $userService;
-
-    public function __construct(BasketService $basketService, UserService $userService)
-    {
-        $this->basketService = $basketService;
-        $this->userService = $userService;
-    }
-
     /**
      * @param Request $request
      * @param PaymentService $paymentService
      * @return Response
+     * @throws ExceptionInterface
      */
     #[Route('/paiement', name: 'app_payment_custom')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -59,6 +45,7 @@ class PaymentController extends AbstractController
      * @param Request $request
      * @param PaymentService $paymentService
      * @return Response
+     * @throws ExceptionInterface
      */
     #[Route('/paiement-stripe', name: 'app_payment_stripe')]
     public function displayStripePayment(Request $request, PaymentService $paymentService): Response
@@ -105,7 +92,7 @@ class PaymentController extends AbstractController
     {
         try {
             $paymentService->selectPayment($id);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $this->createNotFoundException($e->getMessage());
         }
 

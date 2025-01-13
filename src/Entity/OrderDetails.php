@@ -22,6 +22,9 @@ class OrderDetails
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column]
+    private ?int $product_quantity = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class OrderDetails
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getProductQuantity(): ?int
+    {
+        return $this->product_quantity;
+    }
+
+    public function setProductQuantity(int $product_quantity): static
+    {
+        $this->product_quantity = $product_quantity;
 
         return $this;
     }

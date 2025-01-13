@@ -201,6 +201,7 @@ class PaymentService
                 $orderDetail = new OrderDetails();
                 $orderDetail->setOrderAssociated($order);
                 $orderDetail->setProductAssociated($product);
+                $orderDetail->setProductQuantity($basketItem->getQuantity());
                 $orderDetail->setCreatedAt(new \DateTimeImmutable());
 
                 $this->entityManager->persist($orderDetail);
