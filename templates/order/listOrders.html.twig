@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-evenly w-100 m-2 align-items-center">
+        <div class="my-3">
+            <h2>Mes commandes</h2>
+        </div>
+    </div>
+    <div class="border w-75 mx-auto">
+        <table class="w-100 text-center">
+            <thead>
+            <tr class="bg-custom3 text-white">
+                <th class="p-1" style="text-align:left;">Numéro de commande</th>
+                <th>Date</th>
+                <th>Quantité Total</th>
+                <th>Prix Total</th>
+                <th>État</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr class="border">
+                    <td class="p-1" style="text-align:left;">{{ order.codeOrder }}</td>
+                    <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>{{ order.getTotalQuantityOrder() }}</td>
+                    <td>{{ order.getTotalPriceOrder()| number_format(2, ',', ' ') }} €</td>
+                    <td class="{{ order.isValidateOrder() ? 'text-success' : 'text-danger' }}">
+                        {{ order.isValidateOrder() ? 'Validé' : 'Refusé' }}
+                    </td>
+                    <td>
+                        {#<a href="{{ path('app_order_details', { id: order.id }) }}">Voir les détails</a>#}
+                        <a href="#" class="btn btn-secondary text-white p-1">Voir les détails</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

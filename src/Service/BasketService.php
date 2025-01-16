@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Basket;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\BasketItem;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -105,6 +106,29 @@ class BasketService
     {
         $basket->setDiscountCode(null);
         $this->em->persist($basket);
+        $this->em->flush();
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function clearBasketForUser(User $user): void
+    {
+        $basket = $user->getBasket();
+
+        if (!$basket) {
+            throw new \RuntimeException('Le panier de cet utilisateur n\'existe pas.');
+        }
+
+        foreach ($basket->getItems() as $item) {
+            $basket->removeItem($item);
+            $this->em->remove($item);
+        }
+
+        $basket->setDiscountCode(null);
+        $basket->setUpdatedAt(new \DateTimeImmutable());
+
         $this->em->flush();
     }
 }
