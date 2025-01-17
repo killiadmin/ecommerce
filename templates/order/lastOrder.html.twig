@@ -1,24 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Récapitulatif de votre commande{% endblock %}
+{% block title %}Récapitulatif de votre commande !{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="text-center mb-5">Récapitulatif de votre commande</h1>
+        <h1 class="text-center mb-5">Merci pour votre commande !</h1>
         <div class="order-summary border p-4 mb-4 shadow">
             {% if lastOrder %}
                 <h2 class="h4 mb-3">Numéro de commande : {{ lastOrder.getCodeOrder() }}</h2>
-                <h3 class="h5">Client :</h3>
-                <p class="mb-2">{{ lastOrder.getUserOrder().getFirstname() }} {{ lastOrder.getUserOrder().getLastname() }}</p>
-                <p class="mb-2">{{ lastOrder.getUserOrder().getEmail() }}</p>
-                {% set addresses = lastOrder.getUserOrder().getUserAddresses() %}
-                {% if addresses|length > 0 %}
-                    {% for address in addresses %}
-                        <p class="mb-2">
-                            {{ address.getNumberDelivery() }} {{ address.getLibelleDelivery() }} {{ address.getCodeDelivery() }} {{ address.getCityDelivery() }}
-                        </p>
-                    {% endfor %}
-                {% endif %}
+                <div class="d-flex">
+                    <h3 class="h5">Client :</h3>
+                    <p class="ms-2 mb-2">{{ lastOrder.getUserOrder().getFirstname() }} {{ lastOrder.getUserOrder().getLastname() }}</p>
+                </div>
+                <div class="d-flex">
+                    <h3 class="h5">Email :</h3>
+                    <p class="ms-2 mb-2">{{ lastOrder.getUserOrder().getEmail() }}</p>
+                </div>
+                <div class="d-flex">
+                    <h3 class="h5">Adresse de livraison :</h3>
+                    {% set addresses = lastOrder.getUserOrder().getUserAddresses() %}
+                    {% if addresses|length > 0 %}
+                        {% for address in addresses %}
+                            <p class="ms-2  mb-2">
+                                {{ address.getNumberDelivery() }} {{ address.getLibelleDelivery() }} {{ address.getCodeDelivery() }} {{ address.getCityDelivery() }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
         <div class="order-items border p-4 mb-4 shadow">
@@ -60,7 +68,7 @@
             </h3>
         </div>
         <div class="order-actions text-center">
-            <a href="#" class="btn btn-primary mt-3">Voir l'historique des commandes</a>
+            <a href="{{ path('app_product') }}" class="btn btn-primary mt-3">Retourner l'accueil</a>
         </div>
     </div>
 {% endblock %}
