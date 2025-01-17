@@ -52,9 +52,9 @@ class OrderController extends AbstractController
         // Retrieve last order
         $lastOrder = $orderRepository->findLastOrderForUser($user);
 
-        $this->session->remove('basket_validated');
-        $this->session->remove('delivery_validated');
-        $this->session->remove('order_validated');
+        $session->remove('basket_validated');
+        $session->remove('delivery_validated');
+        $session->remove('order_validated');
 
         if (!$lastOrder) {
             return $this->render('order/lastOrder.html.twig', [
