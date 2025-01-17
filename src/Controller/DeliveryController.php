@@ -10,11 +10,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DeliveryController extends AbstractController
 {
+    /**
+     * @param SessionInterface $session
+     * @return Response
+     */
+    #[Route('/panier-valide', name: 'app_basket_validated')]
+    public function validateCart(SessionInterface $session): Response
+    {
+        $session->set('basket_validated', true);
+
+        return $this->redirectToRoute('app_delivery');
+    }
+
     /**
      * Manages the delivery address for the logged-in user and renders the delivery template.
      *
@@ -26,9 +39,14 @@ class DeliveryController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function managementDelivery(
         UserAddressRepository $userAddressRepository,
-        Security              $security
+        Security              $security,
+        SessionInterface      $session,
     ): Response
     {
+        if (!$session->get('basket_validated')) {
+            return $this->redirectToRoute('app_basket');
+        }
+
         $user = $security->getUser();
         $address = $userAddressRepository->findOneBy(['user_associated' => $user]);
 
