@@ -77,7 +77,7 @@ async function handlePayment(stripe, cardElement, { cardholderName, cardCountry,
         }
 
         if (paymentIntent && paymentIntent.status === "succeeded") {
-            window.location.href = "/order";
+            window.location.href = "/commande-valide";
         } else {
             console.info("Paiement en attente ou échoué :", paymentIntent);
             $("#card-errors").text("Le paiement n'a pas pu être confirmé.");

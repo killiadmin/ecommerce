@@ -11,12 +11,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 class PaymentController extends AbstractController
 {
+    /**
+     * @param SessionInterface $session
+     * @return Response
+     */
+    #[Route('/livraison-valide', name: 'app_delivery_validated')]
+    public function validateDelivery(SessionInterface $session): Response
+    {
+        $session->set('delivery_validated', true);
+
+        return $this->redirectToRoute('app_payment_stripe');
+    }
+
     /**
      * @param Request $request
      * @param PaymentService $paymentService
@@ -48,8 +61,16 @@ class PaymentController extends AbstractController
      * @throws ExceptionInterface
      */
     #[Route('/paiement-stripe', name: 'app_payment_stripe')]
-    public function displayStripePayment(Request $request, PaymentService $paymentService): Response
+    public function displayStripePayment(
+        Request          $request,
+        PaymentService   $paymentService,
+        SessionInterface $session
+    ): Response
     {
+        if (!$session->get('delivery_validated')) {
+            return $this->redirectToRoute('app_basket');
+        }
+
         $paymentData = $paymentService->getPaymentData($request);
 
         if ($paymentData['httpRequest']) {

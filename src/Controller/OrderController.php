@@ -7,26 +7,54 @@ use App\Repository\OrderRepository;
 use App\Service\BasketService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class OrderController extends AbstractController
 {
     /**
+     * @param SessionInterface $session
+     * @return Response
+     */
+    #[Route('/commande-valide', name: 'app_order_validated')]
+    public function validateDelivery(SessionInterface $session): Response
+    {
+        $session->set('order_validated', true);
+
+        return $this->redirectToRoute('app_order');
+    }
+
+    /**
      * @param OrderRepository $orderRepository
      * @param OrderDetailsRepository $orderDetailsRepository
      * @param BasketService $basketService
+     * @param SessionInterface $session
      * @return Response
      */
-    #[Route('/order', name: 'app_order')]
-    public function viewLastOrder(OrderRepository $orderRepository, OrderDetailsRepository $orderDetailsRepository, BasketService $basketService): Response
+    #[Route('/commande', name: 'app_order')]
+    public function viewLastOrder(
+        OrderRepository        $orderRepository,
+        OrderDetailsRepository $orderDetailsRepository,
+        BasketService          $basketService,
+        SessionInterface       $session
+    ): Response
     {
+        if (!$session->get('order_validated')) {
+            return $this->redirectToRoute('app_basket');
+        }
+
         $user = $this->getUser();
+
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
         // Retrieve last order
         $lastOrder = $orderRepository->findLastOrderForUser($user);
+
+        $this->session->remove('basket_validated');
+        $this->session->remove('delivery_validated');
+        $this->session->remove('order_validated');
 
         if (!$lastOrder) {
             return $this->render('order/lastOrder.html.twig', [

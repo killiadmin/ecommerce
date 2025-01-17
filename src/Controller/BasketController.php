@@ -17,7 +17,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 class BasketController extends AbstractController
 {
@@ -34,10 +36,17 @@ class BasketController extends AbstractController
      * This method displays the user's basket.
      *
      * @return Response The response containing the rendered template with the basket items or empty basket message
+     * @throws ExceptionInterface
      */
     #[Route('/mon-panier', name: 'app_basket')]
-    public function listBasket(Request $request): Response
+    public function listBasket(
+        Request          $request,
+        SessionInterface $session): Response
     {
+        $session->remove('basket_validated');
+        $session->remove('delivery_validated');
+        $session->remove('order_validated');
+
         $basket = $this->getUserBasket();
         $request->getSession()->set('last_page', $request->getUri());
 
